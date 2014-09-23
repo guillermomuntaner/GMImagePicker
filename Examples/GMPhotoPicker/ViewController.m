@@ -9,7 +9,11 @@
 #import "ViewController.h"
 #import "GMImagePickerController.h"
 
-@interface ViewController () <GMImagePickerControllerDelegate>
+@import UIKit;
+@import Photos;
+
+
+@interface ViewController () <GMImagePickerControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 //Multiple picker properties
 @property (nonatomic, copy) NSArray *selectedImages;
@@ -48,6 +52,12 @@
 
 - (IBAction)testButton:(id)sender
 {
+    
+}
+
+
+- (IBAction)launchGMImagePicker:(id)sender
+{
     if (!self.selectedImages)
         self.selectedImages = [[NSMutableArray alloc] init];
     
@@ -61,26 +71,62 @@
     [self presentViewController:picker animated:YES completion:nil];
 }
 
-- (IBAction)defaultButton:(id)sender {
+- (IBAction)launchUIImagePickerControllerSourceTypeSavedPhotosAlbum:(id)sender
+{
+    UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+    imagePickerController.modalPresentationStyle = UIModalPresentationFullScreen;
+    imagePickerController.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+    imagePickerController.delegate = self;
+    self.imagePickerController = imagePickerController;
+    self.imagePickerController.modalPresentationStyle = UIModalPresentationPopover;
+    UIPopoverPresentationController *popPC = self.imagePickerController.popoverPresentationController;
+    popPC.permittedArrowDirections = UIPopoverArrowDirectionAny;
+    [self showViewController:self.imagePickerController sender:self];
+}
+
+
+- (IBAction)launchUIImagePickerControllerSourceTypePhotoLibrary:(id)sender
+{
+    UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+    imagePickerController.modalPresentationStyle = UIModalPresentationFullScreen;
+    imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    imagePickerController.delegate = self;
+    self.imagePickerController = imagePickerController;
+    self.imagePickerController.modalPresentationStyle = UIModalPresentationPopover;
+    UIPopoverPresentationController *popPC = self.imagePickerController.popoverPresentationController;
+    popPC.permittedArrowDirections = UIPopoverArrowDirectionAny;
+    [self showViewController:self.imagePickerController sender:self];
+}
+
+
+#pragma mark - UIImagePickerControllerDelegate
+
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    NSLog(@"UIImagePickerController: User ended picking assets");
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    NSLog(@"UIImagePickerController: User pressed cancel button");
 }
 
 #pragma mark - GMImagePickerControllerDelegate
-
-//Use this to set up a default folder for the picker. By default it opens albums folder.
-/*- (BOOL)assetsPickerController:(CTAssetsPickerController *)picker isDefaultAssetsGroup:(ALAssetsGroup *)group
- {
- return ([[group valueForProperty:ALAssetsGroupPropertyType] integerValue] == ALAssetsGroupSavedPhotos);
- }*/
 
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray
 {
     [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
     
-    NSLog(@" Number of selected items is: %lu", (unsigned long)assetArray.count);
+    NSLog(@"GMImagePicker: User ended picking assets. Number of selected items is: %lu", (unsigned long)assetArray.count);
 }
 
+//Optional implementation:
 -(void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker
 {
-    NSLog(@"User pressed cancel button");
+    NSLog(@"GMImagePicker: User pressed cancel button");
 }
 @end

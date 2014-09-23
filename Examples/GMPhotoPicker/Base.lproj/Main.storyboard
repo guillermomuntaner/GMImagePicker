@@ -16,32 +16,51 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xik-1Q-ysg">
-                                <rect key="frame" x="277" y="285" width="46" height="30"/>
-                                <state key="normal" title="Button">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LwY-y4-Ukl">
+                                <rect key="frame" x="163" y="285" width="276" height="30"/>
+                                <state key="normal" title="UIImagePicker Type:SavedPhotosAlbum">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="testButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Zb4-Rs-COI"/>
+                                    <action selector="launchUIImagePickerControllerSourceTypeSavedPhotosAlbum:" destination="BYZ-38-t0r" eventType="touchUpInside" id="UWs-aB-oQh"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LwY-y4-Ukl">
-                                <rect key="frame" x="276" y="323" width="49" height="30"/>
-                                <state key="normal" title="Default">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h1v-NB-0Gh">
+                                <rect key="frame" x="186" y="323" width="229" height="30"/>
+                                <state key="normal" title="UIImagePicker Type:PhotoLibrary">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="defaultButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ibp-iW-rMj"/>
+                                    <action selector="launchUIImagePickerControllerSourceTypePhotoLibrary:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qZI-mD-HGo"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xik-1Q-ysg">
+                                <rect key="frame" x="245" y="228" width="110" height="30"/>
+                                <state key="normal" title="GMImagePicker">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="launchGMImagePicker:" destination="BYZ-38-t0r" eventType="touchUpInside" id="MRt-K3-WlQ"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="centerX" secondItem="LwY-y4-Ukl" secondAttribute="centerX" id="EgU-dH-sx6"/>
-                            <constraint firstAttribute="centerY" secondItem="Xik-1Q-ysg" secondAttribute="centerY" id="dik-yK-xMC"/>
+                            <constraint firstAttribute="centerX" secondItem="h1v-NB-0Gh" secondAttribute="centerX" id="7Eu-97-Xmg"/>
+                            <constraint firstAttribute="centerX" secondItem="LwY-y4-Ukl" secondAttribute="centerX" constant="-1" id="EgU-dH-sx6"/>
+                            <constraint firstAttribute="centerY" secondItem="Xik-1Q-ysg" secondAttribute="centerY" constant="57" id="HPe-Hd-tXq"/>
+                            <constraint firstAttribute="centerY" secondItem="h1v-NB-0Gh" secondAttribute="centerY" constant="-38" id="NOc-8T-e5K"/>
+                            <constraint firstAttribute="centerY" secondItem="Xik-1Q-ysg" secondAttribute="centerY" constant="42" id="dik-yK-xMC"/>
                             <constraint firstAttribute="centerX" secondItem="Xik-1Q-ysg" secondAttribute="centerX" id="seA-wj-IqE"/>
-                            <constraint firstItem="LwY-y4-Ukl" firstAttribute="top" secondItem="Xik-1Q-ysg" secondAttribute="bottom" constant="8" id="t99-sX-NZZ"/>
+                            <constraint firstItem="LwY-y4-Ukl" firstAttribute="top" secondItem="Xik-1Q-ysg" secondAttribute="bottom" constant="29" id="t99-sX-NZZ"/>
+                            <constraint firstAttribute="centerY" secondItem="LwY-y4-Ukl" secondAttribute="centerY" id="v7H-aA-vGv"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="t99-sX-NZZ"/>
+                                <exclude reference="dik-yK-xMC"/>
+                            </mask>
+                        </variation>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

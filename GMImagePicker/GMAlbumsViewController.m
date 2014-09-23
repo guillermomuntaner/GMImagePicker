@@ -37,6 +37,7 @@
 
 @property (strong) NSArray *collectionsFetchResults;
 @property (strong) NSArray *collectionsLocalizedTitles;
+@property (strong) NSArray *collectionsFetchResultsAssets;
 @property (nonatomic, weak) GMImagePickerController *picker;
 @property (strong) PHCachingImageManager *imageManager;
 
@@ -65,7 +66,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     self.imageManager = [[PHCachingImageManager alloc] init];
     
     //Table view aspect
-    self.tableView.rowHeight = kThumbnailLength + 12;
+    self.tableView.rowHeight = kAlbumRowHeight;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
     //Navigation bar items
@@ -96,11 +97,53 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         self.title = self.picker.title;
     
     
-    //Fetch PHAssetCollections
+    
+    
+    //Fetch PHAssetCollections:
     PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
     PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
     self.collectionsFetchResults = @[topLevelUserCollections, smartAlbums];
     self.collectionsLocalizedTitles = @[NSLocalizedString(@"Albums", @""), NSLocalizedString(@"Smart Albums", @"")];
+    
+    //All album:
+    NSMutableArray *allFetchResultArray = [[NSMutableArray alloc] init];
+    {
+        //localizedTitle = NSLocalizedString(@"All Photos", @"");
+        PHFetchOptions *options = [[PHFetchOptions alloc] init];
+        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+        PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithOptions:options];
+        [allFetchResultArray addObject:assetsFetchResult];
+    }
+    
+    //User albums:
+    NSMutableArray *userFetchResultArray = [[NSMutableArray alloc] init];
+    for(PHCollection *collection in topLevelUserCollections)
+    {
+        //localizedTitle = collection.localizedTitle;
+        if ([collection isKindOfClass:[PHAssetCollection class]])
+        {
+            PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
+            [userFetchResultArray addObject:[PHAsset fetchAssetsInAssetCollection:assetCollection options:nil]];
+        }
+    }
+
+    
+    //Smart albums:
+    NSMutableArray *smartFetchResultArray = [[NSMutableArray alloc] init];
+    for(PHCollection *collection in smartAlbums)
+    {
+        //localizedTitle = collection.localizedTitle;
+        if ([collection isKindOfClass:[PHAssetCollection class]])
+        {
+            PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
+            // Fetch all assets, sorted by date created.
+            PHFetchOptions *options = [[PHFetchOptions alloc] init];
+            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+            [smartFetchResultArray addObject:[PHAsset fetchAssetsInAssetCollection:assetCollection options:options]];
+        }
+    }
+
+    self.collectionsFetchResultsAssets= @[allFetchResultArray,userFetchResultArray,smartFetchResultArray];
     
     //Register for changes
     [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
@@ -171,100 +214,102 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     NSInteger currentTag = cell.tag + 1;
     cell.tag = currentTag;
     
-    PHFetchResult *assetsFetchResult;
+    //Retrieve the pre-fetched assets for this album:
+    PHFetchResult *assetsFetchResult = (self.collectionsFetchResultsAssets[indexPath.section])[indexPath.row];
+    
     //Set the labels:
     if (indexPath.section == 0)
     {
         localizedTitle = NSLocalizedString(@"All Photos", @"");
-        assetsFetchResult = [PHAsset fetchAssetsWithOptions:nil];
     }
     else
     {
-         PHFetchResult *fetchResult = self.collectionsFetchResults[indexPath.section - 1];
-         PHCollection *collection = fetchResult[indexPath.row];
-         localizedTitle = collection.localizedTitle;
-        
-         if ([collection isKindOfClass:[PHAssetCollection class]])
-         {
-             PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
-             assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
-        }
+        PHFetchResult *fetchResult = self.collectionsFetchResults[indexPath.section - 1];
+        PHCollection *collection = fetchResult[indexPath.row];
+        localizedTitle = collection.localizedTitle;
     }
     cell.textLabel.text = localizedTitle;
+    
     localizedSubTitle = [self tableCellSubtitle:assetsFetchResult];
     cell.detailTextLabel.text = localizedSubTitle;
     
     
-    cell.imageView1.image = nil;
-    cell.imageView2.image = nil;
-    cell.imageView3.image = nil;
-    
     //Set the image:
     if([assetsFetchResult count]>0)
     {
-        if([assetsFetchResult count]>2)
-        {
-            //Compute the thumbnail pixel size:
-            CGFloat scale = [UIScreen mainScreen].scale;
-            CGSize tableCellThumbnailSize = CGSizeMake(kThumbnailSize.width * scale, kThumbnailSize.height * scale);
-            
-            PHAsset *asset = assetsFetchResult[2];
-            [self.imageManager requestImageForAsset:asset
-                                         targetSize:tableCellThumbnailSize
-                                        contentMode:PHImageContentModeAspectFill
-                                            options:nil
-                                      resultHandler:^(UIImage *result, NSDictionary *info)
+        CGFloat scale = [UIScreen mainScreen].scale;
+        
+        //Compute the thumbnail pixel size:
+        CGSize tableCellThumbnailSize1 = CGSizeMake(kAlbumThumbnailSize1.width*scale, kAlbumThumbnailSize1.height*scale);
+        PHAsset *asset = assetsFetchResult[0];
+        [cell setVideoLayout:(asset.mediaType==PHAssetMediaTypeVideo)];
+        [self.imageManager requestImageForAsset:asset
+                                     targetSize:tableCellThumbnailSize1
+                                    contentMode:PHImageContentModeAspectFill
+                                        options:nil
+                                  resultHandler:^(UIImage *result, NSDictionary *info)
+         {
+             if (cell.tag == currentTag)
              {
-                 // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
-                 if (cell.tag == currentTag)
-                 {
-                     cell.imageView3.image = result;
-                 }
-             }];
-        }
+                 cell.imageView1.image = result;
+             }
+         }];
+        
+        //Second & third images:
+        //TODO: Only preload the 3pixels height visible frame!
         if([assetsFetchResult count]>1)
         {
             //Compute the thumbnail pixel size:
-            CGFloat scale = [UIScreen mainScreen].scale;
-            CGSize tableCellThumbnailSize = CGSizeMake(kThumbnailSize.width * scale, kThumbnailSize.height * scale);
-            
+            CGSize tableCellThumbnailSize2 = CGSizeMake(kAlbumThumbnailSize2.width*scale, kAlbumThumbnailSize2.height*scale);
             PHAsset *asset = assetsFetchResult[1];
             [self.imageManager requestImageForAsset:asset
-                                         targetSize:tableCellThumbnailSize
+                                         targetSize:tableCellThumbnailSize2
                                         contentMode:PHImageContentModeAspectFill
                                             options:nil
                                       resultHandler:^(UIImage *result, NSDictionary *info)
              {
-                 // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
                  if (cell.tag == currentTag)
                  {
                      cell.imageView2.image = result;
                  }
              }];
         }
-        //Compute the thumbnail pixel size:
-        CGFloat scale = [UIScreen mainScreen].scale;
-        CGSize tableCellThumbnailSize = CGSizeMake(kThumbnailSize.width * scale, kThumbnailSize.height * scale);
-        
-        PHAsset *asset = assetsFetchResult[0];
-        [self.imageManager requestImageForAsset:asset
-                                     targetSize:tableCellThumbnailSize
-                                    contentMode:PHImageContentModeAspectFill
-                                        options:nil
-                                  resultHandler:^(UIImage *result, NSDictionary *info)
-         {
-             // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
-             if (cell.tag == currentTag)
+        else
+        {
+            cell.imageView2.image = nil;
+        }
+        if([assetsFetchResult count]>2)
+        {
+            CGSize tableCellThumbnailSize3 = CGSizeMake(kAlbumThumbnailSize3.width*scale, kAlbumThumbnailSize3.height*scale);
+            PHAsset *asset = assetsFetchResult[2];
+            [self.imageManager requestImageForAsset:asset
+                                         targetSize:tableCellThumbnailSize3
+                                        contentMode:PHImageContentModeAspectFill
+                                            options:nil
+                                      resultHandler:^(UIImage *result, NSDictionary *info)
              {
-                 cell.imageView1.image = result;
-             }
-         }];
+                 if (cell.tag == currentTag)
+                 {
+                     cell.imageView3.image = result;
+                 }
+             }];
+        }
+        else
+        {
+            cell.imageView3.image = nil;
+        }
+        
+        
+        
 
         
     }
     else
     {
-        cell.imageView1.image = [UIImage imageNamed:@"ImageSelectedOn"];
+        [cell setVideoLayout:NO];
+        cell.imageView3.image = [UIImage imageNamed:@"EmptyFolder"];
+        cell.imageView2.image = [UIImage imageNamed:@"EmptyFolder"];
+        cell.imageView1.image = [UIImage imageNamed:@"EmptyFolder"];
     }
     
     return cell;

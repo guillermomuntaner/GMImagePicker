@@ -11,8 +11,9 @@
 @interface ViewController : UIViewController
 
 @property (strong) UIImagePickerController* imagePickerController;
-- (IBAction)testButton:(id)sender;
-- (IBAction)defaultButton:(id)sender;
 
+- (IBAction)launchGMImagePicker:(id)sender;
+- (IBAction)launchUIImagePickerControllerSourceTypeSavedPhotosAlbum:(id)sender;
+- (IBAction)launchUIImagePickerControllerSourceTypePhotoLibrary:(id)sender;
 @end
 

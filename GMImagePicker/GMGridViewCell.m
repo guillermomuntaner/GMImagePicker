@@ -46,7 +46,7 @@ static UIColor *disabledColor;
 {
     titleFont       = [UIFont systemFontOfSize:12];
     titleHeight     = 20.0f;
-    videoIcon       = [UIImage imageNamed:@"CTAssetsPickerVideo"];
+    videoIcon       = [UIImage imageNamed:@"GMImagePickerVideo"];
     titleColor      = [UIColor whiteColor];
     checkedIcon     = [UIImage imageNamed:@"CTAssetsPickerChecked"];
     selectedColor   = [UIColor colorWithWhite:1 alpha:0.3];
@@ -97,7 +97,7 @@ static UIColor *disabledColor;
         _videoIcon = [UIImageView new];
         _videoIcon.frame = CGRectMake(x_offset, self.bounds.size.height-titleHeight, self.bounds.size.width-2*x_offset, titleHeight);
         _videoIcon.contentMode = UIViewContentModeLeft;
-        _videoIcon.image = [UIImage imageNamed:@"CTAssetsPickerVideo"];
+        _videoIcon.image = [UIImage imageNamed:@"VideoIcon"];
         _videoIcon.translatesAutoresizingMaskIntoConstraints = NO;
         _videoIcon.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
         [self addSubview:_videoIcon];
@@ -123,14 +123,14 @@ static UIColor *disabledColor;
         _coverView.hidden = YES;
         
         _selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _selectedButton.frame = CGRectMake(self.bounds.size.width/2, 0.0f, self.bounds.size.width/2, self.bounds.size.width/2);
+        _selectedButton.frame = CGRectMake(2*self.bounds.size.width/3, 0.0f, self.bounds.size.width/3, self.bounds.size.width/3);
         _selectedButton.contentMode = UIViewContentModeTopRight;
         _selectedButton.adjustsImageWhenHighlighted = NO;
         [_selectedButton setImage:nil forState:UIControlStateNormal];
         _selectedButton.translatesAutoresizingMaskIntoConstraints = NO;
         _selectedButton.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         //[_selectedButton setImage:[UIImage imageNamed:@"ImageSelectedSmallOff.png"] forState:UIControlStateNormal];
-        [_selectedButton setImage:[UIImage imageNamed:@"ImageSelectedSmallOn.png"] forState:UIControlStateSelected];
+        [_selectedButton setImage:[UIImage imageNamed:@"SelectedOnSmall"] forState:UIControlStateSelected];
         _selectedButton.hidden = NO;
         _selectedButton.userInteractionEnabled = NO;
         [self addSubview:_selectedButton];
@@ -140,7 +140,7 @@ static UIColor *disabledColor;
     return self;
 }
 
-//Required to resize the CAGradientLayer becouse it does not support auto resizing.
+//Required to resize the CAGradientLayer because it does not support auto resizing.
 - (void)layoutSubviews {
     [super layoutSubviews];
     _gradient.frame = _gradientView.bounds;

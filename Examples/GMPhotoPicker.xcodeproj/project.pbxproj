@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B321E46C19D19A5B0021FE16 /* SelectedOn.png in Resources */ = {isa = PBXBuildFile; fileRef = B321E46619D19A5B0021FE16 /* SelectedOn.png */; };
+		B321E46D19D19A5B0021FE16 /* SelectedOn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B321E46719D19A5B0021FE16 /* SelectedOn@2x.png */; };
+		B321E46E19D19A5B0021FE16 /* SelectedOnSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = B321E46819D19A5B0021FE16 /* SelectedOnSmall.png */; };
+		B321E46F19D19A5B0021FE16 /* SelectedOnSmall@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B321E46919D19A5B0021FE16 /* SelectedOnSmall@2x.png */; };
+		B321E47019D19A5B0021FE16 /* VideoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = B321E46A19D19A5B0021FE16 /* VideoIcon.png */; };
+		B321E47119D19A5B0021FE16 /* VideoIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B321E46B19D19A5B0021FE16 /* VideoIcon@2x.png */; };
+		B321E47419D1A5FD0021FE16 /* EmptyFolder@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = B321E47219D1A5FD0021FE16 /* EmptyFolder@1x.png */; };
+		B321E47519D1A5FD0021FE16 /* EmptyFolder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B321E47319D1A5FD0021FE16 /* EmptyFolder@2x.png */; };
 		B34D47DC19CD8634000A4824 /* Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = B34D47C419CD8634000A4824 /* Checkmark.png */; };
 		B34D47DD19CD8634000A4824 /* Checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B34D47C519CD8634000A4824 /* Checkmark@2x.png */; };
 		B34D47DE19CD8634000A4824 /* ImageError.png in Resources */ = {isa = PBXBuildFile; fileRef = B34D47C619CD8634000A4824 /* ImageError.png */; };
@@ -48,8 +56,6 @@
 		B382916B19CC95D400EEB854 /* CTAssetsPickerLocked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B382915D19CC95D400EEB854 /* CTAssetsPickerLocked@2x.png */; };
 		B382916C19CC95D400EEB854 /* CTAssetsPickerPlay.png in Resources */ = {isa = PBXBuildFile; fileRef = B382915F19CC95D400EEB854 /* CTAssetsPickerPlay.png */; };
 		B382916D19CC95D400EEB854 /* CTAssetsPickerPlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B382916019CC95D400EEB854 /* CTAssetsPickerPlay@2x.png */; };
-		B382916E19CC95D400EEB854 /* CTAssetsPickerVideo.png in Resources */ = {isa = PBXBuildFile; fileRef = B382916219CC95D400EEB854 /* CTAssetsPickerVideo.png */; };
-		B382916F19CC95D400EEB854 /* CTAssetsPickerVideo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B382916319CC95D400EEB854 /* CTAssetsPickerVideo@2x.png */; };
 		B3A2F8AE19D18A3700A59BE4 /* GMAlbumsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A2F8A519D18A3700A59BE4 /* GMAlbumsViewCell.m */; };
 		B3A2F8AF19D18A3700A59BE4 /* GMAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A2F8A719D18A3700A59BE4 /* GMAlbumsViewController.m */; };
 		B3A2F8B019D18A3700A59BE4 /* GMGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A2F8A919D18A3700A59BE4 /* GMGridViewCell.m */; };
@@ -68,6 +74,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B321E46619D19A5B0021FE16 /* SelectedOn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectedOn.png; sourceTree = "<group>"; };
+		B321E46719D19A5B0021FE16 /* SelectedOn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SelectedOn@2x.png"; sourceTree = "<group>"; };
+		B321E46819D19A5B0021FE16 /* SelectedOnSmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectedOnSmall.png; sourceTree = "<group>"; };
+		B321E46919D19A5B0021FE16 /* SelectedOnSmall@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SelectedOnSmall@2x.png"; sourceTree = "<group>"; };
+		B321E46A19D19A5B0021FE16 /* VideoIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VideoIcon.png; sourceTree = "<group>"; };
+		B321E46B19D19A5B0021FE16 /* VideoIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "VideoIcon@2x.png"; sourceTree = "<group>"; };
+		B321E47219D1A5FD0021FE16 /* EmptyFolder@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "EmptyFolder@1x.png"; sourceTree = "<group>"; };
+		B321E47319D1A5FD0021FE16 /* EmptyFolder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "EmptyFolder@2x.png"; sourceTree = "<group>"; };
 		B34D47C419CD8634000A4824 /* Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Checkmark.png; sourceTree = "<group>"; };
 		B34D47C519CD8634000A4824 /* Checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Checkmark@2x.png"; sourceTree = "<group>"; };
 		B34D47C619CD8634000A4824 /* ImageError.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ImageError.png; sourceTree = "<group>"; };
@@ -115,8 +129,6 @@
 		B382915D19CC95D400EEB854 /* CTAssetsPickerLocked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CTAssetsPickerLocked@2x.png"; sourceTree = "<group>"; };
 		B382915F19CC95D400EEB854 /* CTAssetsPickerPlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CTAssetsPickerPlay.png; sourceTree = "<group>"; };
 		B382916019CC95D400EEB854 /* CTAssetsPickerPlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CTAssetsPickerPlay@2x.png"; sourceTree = "<group>"; };
-		B382916219CC95D400EEB854 /* CTAssetsPickerVideo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CTAssetsPickerVideo.png; sourceTree = "<group>"; };
-		B382916319CC95D400EEB854 /* CTAssetsPickerVideo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CTAssetsPickerVideo@2x.png"; sourceTree = "<group>"; };
 		B3A2F8A419D18A3700A59BE4 /* GMAlbumsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMAlbumsViewCell.h; sourceTree = "<group>"; };
 		B3A2F8A519D18A3700A59BE4 /* GMAlbumsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMAlbumsViewCell.m; sourceTree = "<group>"; };
 		B3A2F8A619D18A3700A59BE4 /* GMAlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMAlbumsViewController.h; sourceTree = "<group>"; };
@@ -293,8 +305,6 @@
 		B382916119CC95D400EEB854 /* CTAssetsPickerVideo.imageset */ = {
 			isa = PBXGroup;
 			children = (
-				B382916219CC95D400EEB854 /* CTAssetsPickerVideo.png */,
-				B382916319CC95D400EEB854 /* CTAssetsPickerVideo@2x.png */,
 			);
 			name = CTAssetsPickerVideo.imageset;
 			path = Images.xcassets/CTAssetsPickerVideo.imageset;
@@ -316,6 +326,14 @@
 		B3A2F8A319D18A3700A59BE4 /* GMImagePicker */ = {
 			isa = PBXGroup;
 			children = (
+				B321E47219D1A5FD0021FE16 /* EmptyFolder@1x.png */,
+				B321E47319D1A5FD0021FE16 /* EmptyFolder@2x.png */,
+				B321E46619D19A5B0021FE16 /* SelectedOn.png */,
+				B321E46719D19A5B0021FE16 /* SelectedOn@2x.png */,
+				B321E46819D19A5B0021FE16 /* SelectedOnSmall.png */,
+				B321E46919D19A5B0021FE16 /* SelectedOnSmall@2x.png */,
+				B321E46A19D19A5B0021FE16 /* VideoIcon.png */,
+				B321E46B19D19A5B0021FE16 /* VideoIcon@2x.png */,
 				B3A2F8A419D18A3700A59BE4 /* GMAlbumsViewCell.h */,
 				B3A2F8A519D18A3700A59BE4 /* GMAlbumsViewCell.m */,
 				B3A2F8A619D18A3700A59BE4 /* GMAlbumsViewController.h */,
@@ -412,12 +430,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B321E47119D19A5B0021FE16 /* VideoIcon@2x.png in Resources */,
+				B321E46F19D19A5B0021FE16 /* SelectedOnSmall@2x.png in Resources */,
 				B34D47E319CD8634000A4824 /* ImageSelectedOn@2x.png in Resources */,
 				B34D47E619CD8634000A4824 /* ImageSelectedSmallOn.png in Resources */,
 				B382916519CC95D400EEB854 /* CTAssetsPickerChecked@2x.png in Resources */,
 				B37D57A019CA44B3007F64BD /* Info.plist in Resources */,
 				B34D47DD19CD8634000A4824 /* Checkmark@2x.png in Resources */,
+				B321E46E19D19A5B0021FE16 /* SelectedOnSmall.png in Resources */,
 				B382916719CC95D400EEB854 /* CTAssetsPickerEmptyAsset@2x.png in Resources */,
+				B321E47419D1A5FD0021FE16 /* EmptyFolder@1x.png in Resources */,
 				B34D47F019CD8634000A4824 /* UIBarButtonItemGrid.png in Resources */,
 				B34D47F219CD8634000A4824 /* UIBarButtonItemGridiOS6.png in Resources */,
 				B34D47DE19CD8634000A4824 /* ImageError.png in Resources */,
@@ -427,26 +449,28 @@
 				B34D47F119CD8634000A4824 /* UIBarButtonItemGrid@2x.png in Resources */,
 				B382916619CC95D400EEB854 /* CTAssetsPickerEmptyAsset.png in Resources */,
 				B34D47E919CD8634000A4824 /* UIBarButtonItemArrowLeft@2x.png in Resources */,
-				B382916E19CC95D400EEB854 /* CTAssetsPickerVideo.png in Resources */,
+				B321E47519D1A5FD0021FE16 /* EmptyFolder@2x.png in Resources */,
 				B34D47EA19CD8634000A4824 /* UIBarButtonItemArrowOutlineLeft.png in Resources */,
-				B382916F19CC95D400EEB854 /* CTAssetsPickerVideo@2x.png in Resources */,
 				B34D47E719CD8634000A4824 /* ImageSelectedSmallOn@2x.png in Resources */,
 				B34D47DF19CD8634000A4824 /* ImageError@2x.png in Resources */,
 				B37D579F19CA44AF007F64BD /* Main.storyboard in Resources */,
 				B34D47E419CD8634000A4824 /* ImageSelectedSmallOff.png in Resources */,
 				B34D47F319CD8634000A4824 /* UIBarButtonItemGridiOS6@2x.png in Resources */,
 				B382916819CC95D400EEB854 /* CTAssetsPickerEmptyCell.png in Resources */,
+				B321E47019D19A5B0021FE16 /* VideoIcon.png in Resources */,
 				B34D47DC19CD8634000A4824 /* Checkmark.png in Resources */,
 				B34D47EE19CD8634000A4824 /* UIBarButtonItemArrowRight.png in Resources */,
 				B382916919CC95D400EEB854 /* CTAssetsPickerEmptyCell@2x.png in Resources */,
 				B382916A19CC95D400EEB854 /* CTAssetsPickerLocked.png in Resources */,
 				B37D578519CA3B3A007F64BD /* Images.xcassets in Resources */,
 				B382916419CC95D400EEB854 /* CTAssetsPickerChecked.png in Resources */,
+				B321E46D19D19A5B0021FE16 /* SelectedOn@2x.png in Resources */,
 				B34D47EB19CD8634000A4824 /* UIBarButtonItemArrowOutlineLeft@2x.png in Resources */,
 				B34D47E519CD8634000A4824 /* ImageSelectedSmallOff@2x.png in Resources */,
 				B382916B19CC95D400EEB854 /* CTAssetsPickerLocked@2x.png in Resources */,
 				B34D47E119CD8634000A4824 /* ImageSelectedOff@2x.png in Resources */,
 				B34D47E219CD8634000A4824 /* ImageSelectedOn.png in Resources */,
+				B321E46C19D19A5B0021FE16 /* SelectedOn.png in Resources */,
 				B34D47E019CD8634000A4824 /* ImageSelectedOff.png in Resources */,
 				B34D47EF19CD8634000A4824 /* UIBarButtonItemArrowRight@2x.png in Resources */,
 				B34D47EC19CD8634000A4824 /* UIBarButtonItemArrowOutlineRight.png in Resources */,

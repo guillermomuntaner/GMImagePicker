@@ -23,6 +23,7 @@
 @property (nonatomic, strong) UIImageView *imageView3;
 //Video additional information
 @property (nonatomic, strong) UIImageView *videoIcon;
+@property (nonatomic, strong) UIImageView *slowMoIcon;
 @property (nonatomic, strong) UIView* gradientView;
 @property (nonatomic, strong) CAGradientLayer *gradient;
 //Selection overlay
