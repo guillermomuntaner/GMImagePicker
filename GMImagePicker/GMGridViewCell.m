@@ -1,0 +1,185 @@
+/*
+ CTAssetsViewCell.m
+ 
+ The MIT License (MIT)
+ 
+ Copyright (c) 2013 Clement CN Tsang
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ 
+ */
+
+#import "GMGridViewCell.h"
+
+
+@interface GMGridViewCell ()
+@end
+
+
+@implementation GMGridViewCell
+
+static UIFont *titleFont;
+static CGFloat titleHeight;
+static UIImage *videoIcon;
+static UIColor *titleColor;
+static UIImage *checkedIcon;
+static UIColor *selectedColor;
+static UIColor *disabledColor;
+
++ (void)initialize
+{
+    titleFont       = [UIFont systemFontOfSize:12];
+    titleHeight     = 20.0f;
+    videoIcon       = [UIImage imageNamed:@"CTAssetsPickerVideo"];
+    titleColor      = [UIColor whiteColor];
+    checkedIcon     = [UIImage imageNamed:@"CTAssetsPickerChecked"];
+    selectedColor   = [UIColor colorWithWhite:1 alpha:0.3];
+    disabledColor   = [UIColor colorWithWhite:1 alpha:0.9];
+}
+
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    
+    self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.contentView.translatesAutoresizingMaskIntoConstraints = YES;
+}
+
+- (id)initWithFrame:(CGRect)frame
+{
+    if (self = [super initWithFrame:frame])
+    {
+        self.opaque                 = NO;
+        self.enabled                = YES;
+        
+        CGFloat cellSize = self.contentView.bounds.size.width;
+        
+        // The image view
+        _imageView = [UIImageView new];
+        _imageView.frame = CGRectMake(0, 0, cellSize, cellSize);
+        _imageView.contentMode = UIViewContentModeScaleAspectFill;
+        _imageView.clipsToBounds = YES;
+        _imageView.translatesAutoresizingMaskIntoConstraints = NO;
+        _imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        [self addSubview:_imageView];
+        
+        
+        // The video gradient, label & icon
+        float x_offset = 4.0f;
+        UIColor *topGradient = [UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:0.0];
+        UIColor *botGradient = [UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:0.8];
+        _gradientView = [[UIView alloc] initWithFrame: CGRectMake(0.0f, self.bounds.size.height-titleHeight, self.bounds.size.width, titleHeight)];
+        _gradient = [CAGradientLayer layer];
+        _gradient.frame = _gradientView.bounds;
+        _gradient.colors = [NSArray arrayWithObjects:(id)[topGradient CGColor], (id)[botGradient CGColor], nil];
+        [_gradientView.layer insertSublayer:_gradient atIndex:0];
+        _gradientView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+        _gradientView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:_gradientView];
+        _gradientView.hidden = YES;
+        
+        _videoIcon = [UIImageView new];
+        _videoIcon.frame = CGRectMake(x_offset, self.bounds.size.height-titleHeight, self.bounds.size.width-2*x_offset, titleHeight);
+        _videoIcon.contentMode = UIViewContentModeLeft;
+        _videoIcon.image = [UIImage imageNamed:@"CTAssetsPickerVideo"];
+        _videoIcon.translatesAutoresizingMaskIntoConstraints = NO;
+        _videoIcon.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+        [self addSubview:_videoIcon];
+        _videoIcon.hidden = YES;
+        
+        _videoDuration = [UILabel new];
+        _videoDuration.font = titleFont;
+        _videoDuration.textColor = titleColor;
+        _videoDuration.textAlignment = NSTextAlignmentRight;
+        _videoDuration.frame = CGRectMake(x_offset, self.bounds.size.height-titleHeight, self.bounds.size.width-2*x_offset, titleHeight);
+        _videoDuration.contentMode = UIViewContentModeRight;
+        _videoDuration.translatesAutoresizingMaskIntoConstraints = NO;
+        _videoDuration.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+        [self addSubview:_videoDuration];
+        _videoDuration.hidden = YES;
+        
+        // Selection overlay & icon
+        _coverView = [[UIView alloc] initWithFrame:self.bounds];
+        _coverView.translatesAutoresizingMaskIntoConstraints = NO;
+        _coverView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        _coverView.backgroundColor = [UIColor colorWithRed:0.24 green:0.47 blue:0.85 alpha:0.6];
+        [self addSubview:_coverView];
+        _coverView.hidden = YES;
+        
+        _selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _selectedButton.frame = CGRectMake(self.bounds.size.width/2, 0.0f, self.bounds.size.width/2, self.bounds.size.width/2);
+        _selectedButton.contentMode = UIViewContentModeTopRight;
+        _selectedButton.adjustsImageWhenHighlighted = NO;
+        [_selectedButton setImage:nil forState:UIControlStateNormal];
+        _selectedButton.translatesAutoresizingMaskIntoConstraints = NO;
+        _selectedButton.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        //[_selectedButton setImage:[UIImage imageNamed:@"ImageSelectedSmallOff.png"] forState:UIControlStateNormal];
+        [_selectedButton setImage:[UIImage imageNamed:@"ImageSelectedSmallOn.png"] forState:UIControlStateSelected];
+        _selectedButton.hidden = NO;
+        _selectedButton.userInteractionEnabled = NO;
+        [self addSubview:_selectedButton];
+        
+    }
+    
+    return self;
+}
+
+//Required to resize the CAGradientLayer becouse it does not support auto resizing.
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    _gradient.frame = _gradientView.bounds;
+}
+
+- (void)bind:(PHAsset *)asset
+{
+    self.asset  = asset;
+    
+    if (self.asset.mediaType == PHAssetMediaTypeVideo)
+    {
+        _videoIcon.hidden = NO;
+        _videoDuration.hidden = NO;
+        _gradientView.hidden = NO;
+        _videoDuration.text = [self getDurationWithFormat:self.asset.duration];
+    }
+    else
+    {
+        _videoIcon.hidden = YES;
+        _videoDuration.hidden = YES;
+        _gradientView.hidden = YES;
+    }
+}
+
+// Override setSelected
+- (void)setSelected:(BOOL)selected
+{
+    [super setSelected:selected];
+    _coverView.hidden = !selected;
+    _selectedButton.selected = selected;
+}
+
+-(NSString*)getDurationWithFormat:(NSTimeInterval)duration
+{
+    NSInteger ti = (NSInteger)duration;
+    NSInteger seconds = ti % 60;
+    NSInteger minutes = (ti / 60) % 60;
+    NSInteger hours = (ti / 3600);
+    return [NSString stringWithFormat:@"%02ld:%02ld:%02ld", (long)hours, (long)minutes, (long)seconds];
+}
+
+@end
