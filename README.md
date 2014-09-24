@@ -3,65 +3,48 @@ GMImagePicker
 
 An image & video picker supporting multiple selection. Powered by the new iOS 8 **Photo framework**.
 
-![Screenshot](tableView.png "Screenshot")  ![Screenshot](collectionView.png "Screenshot")
+### Screenshots
 
-## Features
+![Screenshot](tableView.png "Screenshot")  
+
+![Screenshot](collectionView.png "Screenshot")
+
+### Features
 1. Allows selection of multiple photos and videos, even from different albums.
 2. Full adoption of new iOS8 **PhotoKit**. Returns and array of PHAssets.
 3. Mimics UIImagePickerController in terms of featured, appearance and behaviour.
 4. Dynamically sized grid view, easy to customize and fully compatible with iPhone 6/6+.
-5. Optional bottom toolbar with information about users selection.
-6. Filter accesible elements by collections and asset types.
-7. Unlimited acces to smart collections, including **Favorites**, **Slo-mo** or **Recently deleted** (not accesible through UIImagePickerController).
-8. Fast & small memory footprint powered by PHCachingImageManager.
+5. Bottom toolbar with information about users selection.
+6. Unlimited acces to smart collections, including **Favorites**, **Slo-mo** or **Recently deleted** (not accesible through UIImagePickerController).
+7. Fast & small memory footprint powered by PHCachingImageManager.
+8. TODO: Filter accesible elements by collections and asset types.
 
-## Minimum Requirement
-Xcode 6 and iOS 8.
+## Usage
 
-## Installation
-CocoaPods coming soon...
+#### Installation
+CocoaPods is coming soon... 
+For now, download and import GMImagePicker folder into your project.
 
-For now, just download and import GMImagePicker folder into your project.
-
-
-# Usage
-
-Please refer to the demo app for sample code.
-
-### Import header
-
-Import the header file where you want to present the GMImagePicker.
+#### Import header file
 
 ```` objective-c
 #import "GMImagePickerController.h"
 ````
-
-### Create, customize and present GMImagePicker
-
-Instantiate the picker, set its delegate, customize its interface and present it.
+#### Initialize the picker, set the delegate and present it.
 
 ```` objective-c
-	//Crete the picker and set delegate
 	GMImagePickerController *picker = [[GMImagePickerController alloc] init];
-    picker.delegate             = self;
-
-    //Customize UI
-    picker.colsInPortrait=3;
-    picker.colsInLandscape=5;
-    picker.minimumInteritemSpacing=2.0;
-    
-    //Present the picker controller
+    picker.delegate = self;
     [self presentViewController:picker animated:YES completion:nil];
 ````
 
-### Implement delegate
-
+#### Delegate
 Implement the `GMImagePickerControllerDelegate` protocol in your class 
 
 ```` objective-c
 @interface YourViewController : UIViewController <GMImagePickerControllerDelegate>
 ````
-Now implement `didFinishPickingAssets` delegate method. Note you are responsible for dismissing the picker when the operation completes and process the returned `(NSArray *)assetArray` :
+Implement the `didFinishPickingAssets` delegate method. Note you are responsible for dismissing the picker when the operation completes and process the returned `(NSArray *)assetArray` :
 
 ```` objective-c
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray
@@ -80,7 +63,23 @@ You can also implement optional `assetsPickerControllerDidCancel`
 ````
 
 
-## License
+#### Customization
+Before presenting the picker, you can customize some of its properties
+```` objective-c
+    ...
+    //Customize UI
+    picker.colsInPortrait = 3;
+    picker.colsInLandscape = 5;
+    picker.minimumInteritemSpacing = 2.0;
+    ...
+````
+
+
+#### Minimum Requirement
+Xcode 6 and iOS 8.
+
+
+### License
 
 The MIT License (MIT)
 
