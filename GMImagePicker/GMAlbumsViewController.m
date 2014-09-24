@@ -320,6 +320,8 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     GMGridViewController *gridViewController = [[GMGridViewController alloc] initWithPicker:[self picker]];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    gridViewController.title = cell.textLabel.text;
     
     //All photos selected
     if (indexPath.section == 0 )
