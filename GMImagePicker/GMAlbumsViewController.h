@@ -1,32 +1,28 @@
-/*
- CTAssetsGroupViewController.h
- 
- The MIT License (MIT)
- 
- Copyright (c) 2013 Clement CN Tsang
- 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
- 
- */
+//
+//  GMAlbumsViewController.h
+//  GMPhotoPicker
+//
+//  Created by Guillermo Muntaner Perelló on 19/09/14.
+//  Copyright (c) 2014 Guillermo Muntaner Perelló. All rights reserved.
+//
 
 #import <UIKit/UIKit.h>
 
+// Measuring IOS8 Photos APP at @2x (iPhone5s):
+//   The rows are 180px/90pts
+//   Left image border is 21px/10.5pts
+//   Separation between image and text is 42px/21pts (double the previouse one)
+//   The bigger image measures 139px/69.5pts including 1px/0.5pts white border.
+//   The second image measures 131px/65.6pts including 1px/0.5pts white border. Only 3px/1.5pts visible
+//   The third image measures 123px/61.5pts  including 1px/0.5pts white border. Only 3px/1.5pts visible
+
+static int kAlbumRowHeight = 90;
+static int kAlbumLeftToImageSpace = 10;
+static int kAlbumImageToTextSpace = 21;
+static float const kAlbumGradientHeight = 20.0f;
+static CGSize const kAlbumThumbnailSize1 = {70.0f , 70.0f};
+static CGSize const kAlbumThumbnailSize2 = {66.0f , 66.0f};
+static CGSize const kAlbumThumbnailSize3 = {62.0f , 62.0f};
 
 
 @interface GMAlbumsViewController : UITableViewController

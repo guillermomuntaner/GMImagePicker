@@ -1,29 +1,10 @@
-/*
- CTAssetsGroupViewController.m
- 
- The MIT License (MIT)
- 
- Copyright (c) 2013 Clement CN Tsang
- 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
- 
- */
+//
+//  GMAlbumsViewController.m
+//  GMPhotoPicker
+//
+//  Created by Guillermo Muntaner Perelló on 19/09/14.
+//  Copyright (c) 2014 Guillermo Muntaner Perelló. All rights reserved.
+//
 
 #import "GMImagePickerController.h"
 #import "GMAlbumsViewController.h"
@@ -96,8 +77,15 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     else
         self.title = self.picker.title;
     
+
+    // TO-DO Customizable predicates:
+    // Predicate has to filter properties of the type of object returned by the PHFetchResult:
+    // PHCollectionList, PHAssetCollection and PHAsset require different predicates
+    // with limited posibilities (cannot filter a collection by mediaType for example)
     
-    
+    //NSPredicate *predicatePHCollectionList = [NSPredicate predicateWithFormat:@"(mediaType == %d)", PHAssetMediaTypeImage];
+    //NSPredicate *predicatePHAssetCollection = [NSPredicate predicateWithFormat:@"(mediaType == %d)", PHAssetMediaTypeImage];
+    //NSPredicate *predicatePHAsset = [NSPredicate predicateWithFormat:@"(mediaType == %d)", PHAssetMediaTypeImage];
     
     //Fetch PHAssetCollections:
     PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
@@ -105,12 +93,12 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     self.collectionsFetchResults = @[topLevelUserCollections, smartAlbums];
     self.collectionsLocalizedTitles = @[NSLocalizedString(@"Albums", @""), NSLocalizedString(@"Smart Albums", @"")];
     
-    //All album:
+    //All album: Sorted by descending creation date.
     NSMutableArray *allFetchResultArray = [[NSMutableArray alloc] init];
     {
-        //localizedTitle = NSLocalizedString(@"All Photos", @"");
         PHFetchOptions *options = [[PHFetchOptions alloc] init];
         options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+        //options.predicate = predicatePHAsset;
         PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithOptions:options];
         [allFetchResultArray addObject:assetsFetchResult];
     }
@@ -119,26 +107,26 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     NSMutableArray *userFetchResultArray = [[NSMutableArray alloc] init];
     for(PHCollection *collection in topLevelUserCollections)
     {
-        //localizedTitle = collection.localizedTitle;
         if ([collection isKindOfClass:[PHAssetCollection class]])
         {
+            //PHFetchOptions *options = [[PHFetchOptions alloc] init];
+            //options.predicate = predicatePHAsset;
             PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
             [userFetchResultArray addObject:[PHAsset fetchAssetsInAssetCollection:assetCollection options:nil]];
         }
     }
 
     
-    //Smart albums:
+    //Smart albums: Sorted by descending creation date.
     NSMutableArray *smartFetchResultArray = [[NSMutableArray alloc] init];
     for(PHCollection *collection in smartAlbums)
     {
-        //localizedTitle = collection.localizedTitle;
         if ([collection isKindOfClass:[PHAssetCollection class]])
         {
             PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
-            // Fetch all assets, sorted by date created.
             PHFetchOptions *options = [[PHFetchOptions alloc] init];
             options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+            //options.predicate = predicatePHAsset;
             [smartFetchResultArray addObject:[PHAsset fetchAssetsInAssetCollection:assetCollection options:options]];
         }
     }
@@ -230,11 +218,15 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     }
     cell.textLabel.text = localizedTitle;
     
-    localizedSubTitle = [self tableCellSubtitle:assetsFetchResult];
-    cell.detailTextLabel.text = localizedSubTitle;
     
+    //Display the number of assets
+    if(self.picker.displayAlbumsNumberOfAssets)
+    {
+        localizedSubTitle = [self tableCellSubtitle:assetsFetchResult];
+        cell.detailTextLabel.text = localizedSubTitle;
+    }
     
-    //Set the image:
+    //Set the 3 images (if exists):
     if([assetsFetchResult count]>0)
     {
         CGFloat scale = [UIScreen mainScreen].scale;
@@ -394,8 +386,11 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     return [NSString stringWithFormat:@"%ld", (long)[assetsFetchResult count]];
     
     //A more customized way to return different texts depending on number of photos and videos:
+    
+    /*
+    
     NSUInteger nImages = [assetsFetchResult countOfAssetsWithMediaType:PHAssetMediaTypeImage];
-    NSUInteger nVideos = [assetsFetchResult countOfAssetsWithMediaType:PHAssetMediaTypeImage];
+    NSUInteger nVideos = [assetsFetchResult countOfAssetsWithMediaType:PHAssetMediaTypeVideo];
     
     NSString *format;
     
@@ -407,11 +402,11 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         }
         else if (nImages>0)
         {
-            format = (nImages > 1) ? NSLocalizedString(@"%ld Photos Selected", nil) : NSLocalizedString(@"%ld Photo Selected", nil);
+            format = (nImages > 1) ? NSLocalizedString(@"%ld Photos", nil) : NSLocalizedString(@"%ld Photo", nil);
         }
         else if (nVideos>0)
         {
-            format = (nVideos > 1) ? NSLocalizedString(@"%ld Videos Selected", nil) : NSLocalizedString(@"%ld Video Selected", nil);
+            format = (nVideos > 1) ? NSLocalizedString(@"%ld Videos", nil) : NSLocalizedString(@"%ld Video", nil);
         }
         return [NSString stringWithFormat:format, (long)[assetsFetchResult count]];
     }
@@ -419,6 +414,8 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     {
         return NSLocalizedString(@"Album is empty", nil);
     }
+     
+    */
 }
 
 

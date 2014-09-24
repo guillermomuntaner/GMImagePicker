@@ -7,6 +7,7 @@
 //
 
 #import "GMAlbumsViewCell.h"
+#import "GMAlbumsViewController.h"
 #import "GMImagePickerController.h"
 #import <QuartzCore/QuartzCore.h>
 

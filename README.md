@@ -12,9 +12,9 @@ An image & video picker supporting multiple selection. Powered by the new iOS 8 
 ### Features
 1. Allows selection of multiple photos and videos, even from different albums.
 2. Full adoption of new iOS8 **PhotoKit**. Returns and array of PHAssets.
-3. Mimics UIImagePickerController in terms of featured, appearance and behaviour.
-4. Dynamically sized grid view, easy to customize and fully compatible with iPhone 6/6+.
-5. Bottom toolbar with information about users selection.
+3. Mimics UIImagePickerController in terms of features, appearance and behaviour.
+4. Dynamically sized grid view, easy to customize and fully compatible with iPhone 6/6+ and iPad.
+5. Optional bottom toolbar with information about users selection.
 6. Unlimited acces to smart collections, including **Favorites**, **Slo-mo** or **Recently deleted** (not accesible through UIImagePickerController).
 7. Fast & small memory footprint powered by PHCachingImageManager.
 8. TODO: Filter accesible elements by collections and asset types.
@@ -67,7 +67,13 @@ You can also implement optional `assetsPickerControllerDidCancel`
 Before presenting the picker, you can customize some of its properties
 ```` objective-c
     ...
-    //Customize UI
+    //Display or not the selection info Toolbar:
+    picker.displaySelectionInfoToolbar = YES;
+
+    //Display or not the number of assets in each album:
+    picker.displayAlbumsNumberOfAssets = YES;
+   
+    //Customize Grid View
     picker.colsInPortrait = 3;
     picker.colsInLandscape = 5;
     picker.minimumInteritemSpacing = 2.0;

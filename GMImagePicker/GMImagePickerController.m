@@ -24,6 +24,7 @@
         
         //Default values:
         _displaySelectionInfoToolbar = YES;
+        _displayAlbumsNumberOfAssets = YES;
         
         //Grid configuration:
         _colsInPortrait = 3;
@@ -76,7 +77,9 @@
 {
     [self.selectedAssets insertObject:asset atIndex:self.selectedAssets.count];
     [self updateDoneButton];
-    [self updateToolbar];
+    
+    if(self.displaySelectionInfoToolbar)
+        [self updateToolbar];
 }
 
 - (void)deselectAsset:(PHAsset *)asset
@@ -84,7 +87,9 @@
     [self.selectedAssets removeObjectAtIndex:[self.selectedAssets indexOfObject:asset]];
     if(self.selectedAssets.count == 0)
         [self updateDoneButton];
-    [self updateToolbar];
+    
+    if(self.displaySelectionInfoToolbar)
+        [self updateToolbar];
 }
 
 - (void)updateDoneButton
@@ -119,6 +124,8 @@
 {
     if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)])
         [self.delegate assetsPickerController:self didFinishPickingAssets:self.selectedAssets];
+    
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 

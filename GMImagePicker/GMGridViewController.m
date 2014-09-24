@@ -1,29 +1,10 @@
-/*
- CTAssetsViewController.m
- 
- The MIT License (MIT)
- 
- Copyright (c) 2013 Clement CN Tsang
- 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
- 
- */
+//
+//  GMGridViewController.m
+//  GMPhotoPicker
+//
+//  Created by Guillermo Muntaner Perelló on 19/09/14.
+//  Copyright (c) 2014 Guillermo Muntaner Perelló. All rights reserved.
+//
 
 #import "GMGridViewController.h"
 #import "GMImagePickerController.h"
@@ -33,6 +14,7 @@
 @import Photos;
 
 
+//Helper methods
 @implementation NSIndexSet (Convenience)
 - (NSArray *)aapl_indexPathsFromIndexesWithSection:(NSUInteger)section {
     NSMutableArray *indexPaths = [NSMutableArray arrayWithCapacity:self.count];
@@ -42,8 +24,6 @@
     return indexPaths;
 }
 @end
-
-
 @implementation UICollectionView (Convenience)
 - (NSArray *)aapl_indexPathsForElementsInRect:(CGRect)rect {
     NSArray *allLayoutAttributes = [self.collectionViewLayout layoutAttributesForElementsInRect:rect];
@@ -57,8 +37,6 @@
 }
 @end
 
-NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
-//NSString * const CTAssetsSupplementaryViewIdentifier = @"CTAssetsSupplementaryViewIdentifier";
 
 
 @interface GMImagePickerController ()
@@ -70,7 +48,6 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 @end
 
 
-
 @interface GMGridViewController () <PHPhotoLibraryChangeObserver>
 
 @property (nonatomic, weak) GMImagePickerController *picker;
@@ -79,9 +56,8 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 
 @end
 
-
 static CGSize AssetGridThumbnailSize;
-
+NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 
 @implementation GMGridViewController
 {
@@ -119,16 +95,9 @@ static CGSize AssetGridThumbnailSize;
         
         [self.collectionView registerClass:GMGridViewCell.class
                 forCellWithReuseIdentifier:GMGridViewCellIdentifier];
-
-        /*[self.collectionView registerClass:CTAssetsSupplementaryView.class
-                forSupplementaryViewOfKind:UICollectionElementKindSectionFooter
-                       withReuseIdentifier:CTAssetsSupplementaryViewIdentifier];*/
         
         self.preferredContentSize = kPopoverContentSize;
     }
-    
-    //[self addNotificationObserver];
-    //[self addGestureRecognizer];
     
     return self;
 }
@@ -160,7 +129,6 @@ static CGSize AssetGridThumbnailSize;
 
 - (void)dealloc
 {
-    //[self removeNotificationObserver];
     [self resetCachedAssets];
     [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
 }
@@ -242,7 +210,6 @@ static CGSize AssetGridThumbnailSize;
             double cellTotalUsedWidth = (double)landscapeLayout.itemSize.width*self.picker.colsInLandscape;
             double spaceTotalWidth = (double)screenHeight-cellTotalUsedWidth;
             double spaceWidth = spaceTotalWidth/(double)(self.picker.colsInLandscape-1);
-            //NSLog(@"Space size: %f",  spaceWidth);
             landscapeLayout.minimumLineSpacing = spaceWidth;
         }
         return landscapeLayout;
@@ -258,44 +225,12 @@ static CGSize AssetGridThumbnailSize;
             double cellTotalUsedWidth = (double)portraitLayout.itemSize.width*self.picker.colsInPortrait;
             double spaceTotalWidth = (double)screenWidth-cellTotalUsedWidth;
             double spaceWidth = spaceTotalWidth/(double)(self.picker.colsInPortrait-1);
-            //NSLog(@"Space size: %f",  spaceWidth);
             portraitLayout.minimumLineSpacing = spaceWidth;
         }
         return portraitLayout;
     }
 }
 
-
-
-/*
-#pragma mark - Gesture Recognizer
-
-- (void)addGestureRecognizer
-{
-    UILongPressGestureRecognizer *longPress =
-    [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(pushPageViewController:)];
-    
-    [self.collectionView addGestureRecognizer:longPress];
-}
-
-
-#pragma mark - Push Assets Page View Controller
-
-- (void)pushPageViewController:(UILongPressGestureRecognizer *)longPress
-{
-    if (longPress.state == UIGestureRecognizerStateBegan)
-    {
-        CGPoint point           = [longPress locationInView:self.collectionView];
-        NSIndexPath *indexPath  = [self.collectionView indexPathForItemAtPoint:point];
-
-        CTAssetsPageViewController *vc = [[CTAssetsPageViewController alloc] initWithAssets:self.assets];
-        vc.pageIndex = indexPath.item;
-
-        [self.navigationController pushViewController:vc animated:YES];
-    }
-}
-
-*/
 
 #pragma mark - Collection View Data Source
 
@@ -352,21 +287,6 @@ static CGSize AssetGridThumbnailSize;
     
     return cell;
 }
-
-/*- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
-{
-    CTAssetsSupplementaryView *view =
-    [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter
-                                       withReuseIdentifier:CTAssetsSupplementaryViewIdentifier
-                                              forIndexPath:indexPath];
-    
-    [view bind:self.assets];
-    
-    if (self.assets.count == 0)
-        view.hidden = YES;
-    
-    return view;
-}*/
 
 
 #pragma mark - Collection View Delegate
