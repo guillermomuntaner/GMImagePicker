@@ -94,7 +94,9 @@ Before presenting the picker, you can customize some of its properties
     ...
 ````
 
-#### Use it as popover
+
+
+## Use it as popover on iPad
 Also works as Popover on the iPad! (with customizable size)
 
 ![Screenshot](ipad.jpg "Screenshot")
