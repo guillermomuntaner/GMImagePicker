@@ -9,7 +9,7 @@ An image & video picker supporting multiple selection. Powered by the new iOS 8 
 
 Also works as Popover on the iPad! (with customizable size)
 
-![Screenshot](iPad.jpg "Screenshot")
+![Screenshot](ipad.jpg "Screenshot")
 
 ### Features
 1. Allows selection of multiple photos and videos, even from different albums.
