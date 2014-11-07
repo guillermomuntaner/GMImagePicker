@@ -48,7 +48,7 @@
     popPC.sourceView = _gmImagePickerButton;
     popPC.sourceRect = _gmImagePickerButton.bounds;
     
-    [self showViewController:picker sender:sender];
+    [self showViewController:picker sender:nil];
 }
 
 - (IBAction)launchUIImagePicker:(id)sender

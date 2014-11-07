@@ -5,19 +5,23 @@ An image & video picker supporting multiple selection. Powered by the new iOS 8 
 
 ### Screenshots
 
-![Screenshot](tableView.png "Screenshot")  
+![Screenshot](GMImagePickerDemo.gif "Screenshot")  
 
-![Screenshot](collectionView.png "Screenshot")
+Also works as Popover on the iPad! (with customizable size)
+
+![Screenshot](iPad.jpg "Screenshot")
 
 ### Features
 1. Allows selection of multiple photos and videos, even from different albums.
-2. Full adoption of new iOS8 **PhotoKit**. Returns and array of PHAssets.
-3. Mimics UIImagePickerController in terms of features, appearance and behaviour.
-4. Dynamically sized grid view, easy to customize and fully compatible with iPhone 6/6+ and iPad.
-5. Optional bottom toolbar with information about users selection.
-6. Unlimited acces to smart collections, including **Favorites**, **Slo-mo** or **Recently deleted** (not accesible through UIImagePickerController).
-7. Fast & small memory footprint powered by PHCachingImageManager.
-8. TODO: Filter accesible elements by collections and asset types.
+2. Optional bottom toolbar with information about users selection.
+3. Works in landscape orientation and allow screen rotation!
+4. It can be used as Popover on iPad, with customizable size.
+5. Full and customizable acces to smart collections, including **Favorites**, **Slo-mo** or **Recently deleted**. 
+6. Dynamically sized grid view, easy to customize and fully compatible with iPhone 6/6+ and iPad.
+7. Mimics UIImagePickerController in terms of features, appearance and behaviour.
+8. Fast & small memory footprint powered by PHCachingImageManager.
+9. Full adoption of new iOS8 **PhotoKit**. Returns and array of PHAssets.
+
 
 ## Usage
 
@@ -63,6 +67,7 @@ You can also implement optional `assetsPickerControllerDidCancel`
 ````
 
 
+
 #### Customization
 Before presenting the picker, you can customize some of its properties
 ```` objective-c
@@ -73,11 +78,46 @@ Before presenting the picker, you can customize some of its properties
     //Display or not the number of assets in each album:
     picker.displayAlbumsNumberOfAssets = YES;
    
-    //Customize Grid View
+    //Customize the picker title and prompt (helper message over the title)
+    picker.title = @"Custom title";
+    picker.customNavigationBarPrompt = @"Custom helper message!";
+
+    //Customize the number of cols depending on orientation and the inter-item spacing
     picker.colsInPortrait = 3;
     picker.colsInLandscape = 5;
     picker.minimumInteritemSpacing = 2.0;
+
+    //You can pick the smart collections you want to chose:
+    _customSmartCollections = @[@(PHAssetCollectionSubtypeSmartAlbumFavorites),
+                                @(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded),
+                                @(PHAssetCollectionSubtypeSmartAlbumVideos),
+                                @(PHAssetCollectionSubtypeSmartAlbumSlomoVideos),
+                                @(PHAssetCollectionSubtypeSmartAlbumTimelapses),
+                                @(PHAssetCollectionSubtypeSmartAlbumBursts),
+                                @(PHAssetCollectionSubtypeSmartAlbumPanoramas)];
     ...
+````
+
+#### Use it as popover
+This code works in both iPhone & iPad
+```` objective-c
+    ...
+    GMImagePickerController *picker = [[GMImagePickerController alloc] init];
+    picker.delegate = self;
+    
+    picker.title = @"Custom title";
+    picker.customNavigationBarPrompt = @"Custom helper message!";
+    picker.colsInPortrait = 3;
+    picker.colsInLandscape = 5;
+    picker.minimumInteritemSpacing = 2.0;
+    picker.modalPresentationStyle = UIModalPresentationPopover;
+    
+    UIPopoverPresentationController *popPC = picker.popoverPresentationController;
+    popPC.permittedArrowDirections = UIPopoverArrowDirectionAny;
+    popPC.sourceView = _gmImagePickerButton;
+    popPC.sourceRect = _gmImagePickerButton.bounds;
+    
+    [self showViewController:picker sender:nil];
 ````
 
 
