@@ -28,7 +28,5 @@
 @property (nonatomic, strong) CAGradientLayer *gradient;
 //Selection overlay
 
-- (void)bindFetchResults:(PHFetchResult *)assetsFetchResults;
-- (void)bindAssetCollection:(PHAssetCollection *)assetCollection;
 - (void)setVideoLayout:(BOOL)isVideo;
 @end

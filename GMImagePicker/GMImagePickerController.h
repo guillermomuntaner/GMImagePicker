@@ -10,7 +10,10 @@
 @import Photos;
 
 
-static CGSize const kPopoverContentSize = {320, 480};
+//This is the default image picker size!
+//static CGSize const kPopoverContentSize = {320, 480};
+//However, the iPad is 1024x768 so it can allow popups up to 768!
+static CGSize const kPopoverContentSize = {480, 720};
 
 
 @protocol GMImagePickerControllerDelegate;
@@ -37,6 +40,17 @@ static CGSize const kPopoverContentSize = {320, 480};
 /** UI Customizations **/
 
 /**
+ *  Determines whether or not the number of assets is shown in the Album list.
+ *  The number of assets is visible by default.
+ */
+@property (nonatomic, strong) NSArray* customSmartCollections;
+
+/**
+ *  If set, it displays a promt in the navigation bar
+ */
+@property (nonatomic) NSString* customNavigationBarPrompt;
+
+/**
  *  Determines whether or not a toolbar with info about user selection is shown.
  *  The InfoToolbar is visible by default.
  */
@@ -60,6 +74,7 @@ static CGSize const kPopoverContentSize = {320, 480};
 @property (nonatomic) double minimumInteritemSpacing;
 
 
+@property (nonatomic, strong) UINavigationController *navigationController;
 
 /**
  *  Managing Asset Selection

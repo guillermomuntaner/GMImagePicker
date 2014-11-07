@@ -72,23 +72,33 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     //Custom init. The picker contains custom information to create the FlowLayout
     self.picker = picker;
     
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    if(UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation))
+    //Ipad popover is not affected by rotation!
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
-        screenHeight = screenRect.size.width;
-        screenWidth = screenRect.size.height;
+        screenWidth = CGRectGetWidth(picker.view.bounds);
+        screenHeight = CGRectGetHeight(picker.view.bounds);
     }
     else
     {
-        screenWidth = screenRect.size.width;
-        screenHeight = screenRect.size.height;
+        if(UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation))
+        {
+            screenHeight = CGRectGetWidth(picker.view.bounds);
+            screenWidth = CGRectGetHeight(picker.view.bounds);
+        }
+        else
+        {
+            screenWidth = CGRectGetWidth(picker.view.bounds);
+            screenHeight = CGRectGetHeight(picker.view.bounds);
+        }
     }
+    
     
     UICollectionViewFlowLayout *layout = [self collectionViewFlowLayoutForOrientation:[UIApplication sharedApplication].statusBarOrientation];
     if (self = [super initWithCollectionViewLayout:layout])
     {
         //Compute the thumbnail pixel size:
         CGFloat scale = [UIScreen mainScreen].scale;
+        //NSLog(@"This is @%fx scale device", scale);
         AssetGridThumbnailSize = CGSizeMake(layout.itemSize.width * scale, layout.itemSize.height * scale);
         
         self.collectionView.allowsMultipleSelection = YES;
@@ -107,6 +117,12 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 {
     [super viewDidLoad];
     [self setupViews];
+    
+    //Navigation bar customization_
+    if(self.picker.customNavigationBarPrompt)
+    {
+        self.navigationItem.prompt = self.picker.customNavigationBarPrompt;
+    }
     
     self.imageManager = [[PHCachingImageManager alloc] init];
     [self resetCachedAssets];
@@ -139,6 +155,11 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        return;
+    }
+    
     UICollectionViewFlowLayout *layout = [self collectionViewFlowLayoutForOrientation:toInterfaceOrientation];
     
     //Update the AssetGridThumbnailSize:
@@ -181,7 +202,7 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 - (void)setupButtons
 {
     self.navigationItem.rightBarButtonItem =
-    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil)
+    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTable(@"picker.navigation.done-button", @"GMImagePicker",@"Done")
                                      style:UIBarButtonItemStyleDone
                                     target:self.picker
                                     action:@selector(finishPickingAssets:)];
@@ -199,22 +220,7 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 
 - (UICollectionViewFlowLayout *)collectionViewFlowLayoutForOrientation:(UIInterfaceOrientation)orientation
 {
-    if(UIInterfaceOrientationIsLandscape(orientation))
-    {
-        if(!landscapeLayout)
-        {
-            landscapeLayout = [[UICollectionViewFlowLayout alloc] init];
-            landscapeLayout.minimumInteritemSpacing = self.picker.minimumInteritemSpacing;
-            int cellTotalUsableWidth = screenHeight - (self.picker.colsInLandscape-1)*self.picker.minimumInteritemSpacing;
-            landscapeLayout.itemSize = CGSizeMake(cellTotalUsableWidth/self.picker.colsInLandscape, cellTotalUsableWidth/self.picker.colsInLandscape);
-            double cellTotalUsedWidth = (double)landscapeLayout.itemSize.width*self.picker.colsInLandscape;
-            double spaceTotalWidth = (double)screenHeight-cellTotalUsedWidth;
-            double spaceWidth = spaceTotalWidth/(double)(self.picker.colsInLandscape-1);
-            landscapeLayout.minimumLineSpacing = spaceWidth;
-        }
-        return landscapeLayout;
-    }
-    else
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
         if(!portraitLayout)
         {
@@ -228,6 +234,39 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
             portraitLayout.minimumLineSpacing = spaceWidth;
         }
         return portraitLayout;
+    }
+    else
+    {
+        if(UIInterfaceOrientationIsLandscape(orientation))
+        {
+            if(!landscapeLayout)
+            {
+                landscapeLayout = [[UICollectionViewFlowLayout alloc] init];
+                landscapeLayout.minimumInteritemSpacing = self.picker.minimumInteritemSpacing;
+                int cellTotalUsableWidth = screenHeight - (self.picker.colsInLandscape-1)*self.picker.minimumInteritemSpacing;
+                landscapeLayout.itemSize = CGSizeMake(cellTotalUsableWidth/self.picker.colsInLandscape, cellTotalUsableWidth/self.picker.colsInLandscape);
+                double cellTotalUsedWidth = (double)landscapeLayout.itemSize.width*self.picker.colsInLandscape;
+                double spaceTotalWidth = (double)screenHeight-cellTotalUsedWidth;
+                double spaceWidth = spaceTotalWidth/(double)(self.picker.colsInLandscape-1);
+                landscapeLayout.minimumLineSpacing = spaceWidth;
+            }
+            return landscapeLayout;
+        }
+        else
+        {
+            if(!portraitLayout)
+            {
+                portraitLayout = [[UICollectionViewFlowLayout alloc] init];
+                portraitLayout.minimumInteritemSpacing = self.picker.minimumInteritemSpacing;
+                int cellTotalUsableWidth = screenWidth - (self.picker.colsInPortrait-1)*self.picker.minimumInteritemSpacing;
+                portraitLayout.itemSize = CGSizeMake(cellTotalUsableWidth/self.picker.colsInPortrait, cellTotalUsableWidth/self.picker.colsInPortrait);
+                double cellTotalUsedWidth = (double)portraitLayout.itemSize.width*self.picker.colsInPortrait;
+                double spaceTotalWidth = (double)screenWidth-cellTotalUsedWidth;
+                double spaceWidth = spaceTotalWidth/(double)(self.picker.colsInPortrait-1);
+                portraitLayout.minimumLineSpacing = spaceWidth;
+            }
+            return portraitLayout;
+        }
     }
 }
 
@@ -250,17 +289,39 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     cell.tag = currentTag;
     
     PHAsset *asset = self.assetsFetchResults[indexPath.item];
-    [self.imageManager requestImageForAsset:asset
-                                 targetSize:AssetGridThumbnailSize
-                                contentMode:PHImageContentModeAspectFill
-                                    options:nil
-                              resultHandler:^(UIImage *result, NSDictionary *info) {
-                                  
-        // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
-        if (cell.tag == currentTag) {
-            [cell.imageView setImage:result];
-        }
-    }];
+    
+    /*if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        NSLog(@"Image manager: Requesting FIT image for iPad");
+        [self.imageManager requestImageForAsset:asset
+                                     targetSize:AssetGridThumbnailSize
+                                    contentMode:PHImageContentModeAspectFit
+                                        options:nil
+                                  resultHandler:^(UIImage *result, NSDictionary *info) {
+                                      
+                                      // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
+                                      if (cell.tag == currentTag) {
+                                          [cell.imageView setImage:result];
+                                      }
+                                  }];
+    }
+    else*/
+    {
+        //NSLog(@"Image manager: Requesting FILL image for iPhone");
+        [self.imageManager requestImageForAsset:asset
+                                     targetSize:AssetGridThumbnailSize
+                                    contentMode:PHImageContentModeAspectFill
+                                        options:nil
+                                  resultHandler:^(UIImage *result, NSDictionary *info) {
+                                      
+                                      // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
+                                      if (cell.tag == currentTag) {
+                                          [cell.imageView setImage:result];
+                                      }
+                                  }];
+    }
+    
+    
     
     [cell bind:asset];
     

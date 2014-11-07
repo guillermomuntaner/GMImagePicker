@@ -31,6 +31,17 @@
         _colsInLandscape = 5;
         _minimumInteritemSpacing = 2.0;
         
+        //Sample of how to select the collections you want to display:
+        _customSmartCollections = @[@(PHAssetCollectionSubtypeSmartAlbumFavorites),
+                                    @(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded),
+                                    @(PHAssetCollectionSubtypeSmartAlbumVideos),
+                                    @(PHAssetCollectionSubtypeSmartAlbumSlomoVideos),
+                                    @(PHAssetCollectionSubtypeSmartAlbumTimelapses),
+                                    @(PHAssetCollectionSubtypeSmartAlbumBursts),
+                                    @(PHAssetCollectionSubtypeSmartAlbumPanoramas)];
+        //If you don't want to show smart collections, just put _customSmartCollections to nil;
+        //_customSmartCollections=nil;
+        
         self.preferredContentSize = kPopoverContentSize;
         
         [self setupNavigationController];
@@ -61,14 +72,14 @@
 - (void)setupNavigationController
 {
     GMAlbumsViewController *albumsViewController = [[GMAlbumsViewController alloc] init];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:albumsViewController];
-    navigationController.delegate = self;
+    _navigationController = [[UINavigationController alloc] initWithRootViewController:albumsViewController];
+    _navigationController.delegate = self;
     
-    [navigationController willMoveToParentViewController:self];
-    [navigationController.view setFrame:self.view.frame];
-    [self.view addSubview:navigationController.view];
-    [self addChildViewController:navigationController];
-    [navigationController didMoveToParentViewController:self];
+    [_navigationController willMoveToParentViewController:self];
+    [_navigationController.view setFrame:self.view.frame];
+    [self.view addSubview:_navigationController.view];
+    [self addChildViewController:_navigationController];
+    [_navigationController didMoveToParentViewController:self];
 }
 
 #pragma mark - Select / Deselect Asset
@@ -125,7 +136,7 @@
     if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)])
         [self.delegate assetsPickerController:self didFinishPickingAssets:self.selectedAssets];
     
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    //[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -146,25 +157,33 @@
     NSPredicate *photoPredicate = [self predicateOfAssetType:PHAssetMediaTypeImage];
     NSPredicate *videoPredicate = [self predicateOfAssetType:PHAssetMediaTypeVideo];
     
-    BOOL photoSelected = ([self.selectedAssets filteredArrayUsingPredicate:photoPredicate].count > 0);
-    BOOL videoSelected = ([self.selectedAssets filteredArrayUsingPredicate:videoPredicate].count > 0);
+    NSInteger nImages = [self.selectedAssets filteredArrayUsingPredicate:photoPredicate].count;
+    NSInteger nVideos = [self.selectedAssets filteredArrayUsingPredicate:videoPredicate].count;
     
-    NSString *format;
-    
-    if (photoSelected && videoSelected)
+    if (nImages>0 && nVideos>0)
     {
-        format = NSLocalizedString(@"%ld Items Selected", nil);
+        return [NSString stringWithFormat:NSLocalizedStringFromTable(@"picker.selection.multiple-items", @"GMImagePicker", @"%@ Items Selected" ), @(nImages+nVideos)];
     }
-    else if (photoSelected)
+    else if (nImages>1)
     {
-        format = (self.selectedAssets.count > 1) ? NSLocalizedString(@"%ld Photos Selected", nil) : NSLocalizedString(@"%ld Photo Selected", nil);
+        return [NSString stringWithFormat:NSLocalizedStringFromTable(@"picker.selection.multiple-photos", @"GMImagePicker", @"%@ Photos Selected"), @(nImages)];
     }
-    else if (videoSelected)
+    else if (nImages==1)
     {
-        format = (self.selectedAssets.count > 1) ? NSLocalizedString(@"%ld Videos Selected", nil) : NSLocalizedString(@"%ld Video Selected", nil);
+        return NSLocalizedStringFromTable(@"picker.selection.single-photo", @"GMImagePicker", @"1 Photo Selected" );
     }
-    
-    return [NSString stringWithFormat:format, (long)self.selectedAssets.count];
+    else if (nVideos>1)
+    {
+        return [NSString stringWithFormat:NSLocalizedStringFromTable(@"picker.selection.multiple-videos", @"GMImagePicker", @"%@ Videos Selected"), @(nVideos)];
+    }
+    else if (nVideos==1)
+    {
+        return NSLocalizedStringFromTable(@"picker.selection.single-video", @"GMImagePicker", @"1 Video Selected");
+    }
+    else
+    {
+        return nil;
+    }
 }
 
 

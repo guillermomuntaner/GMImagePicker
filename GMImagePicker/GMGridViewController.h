@@ -15,7 +15,6 @@
 @interface GMGridViewController : UICollectionViewController
 
 @property (strong) PHFetchResult *assetsFetchResults;
-@property (strong) PHAssetCollection *assetCollection;
 
 -(id)initWithPicker:(GMImagePickerController *)picker;
     

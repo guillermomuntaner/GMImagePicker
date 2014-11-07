@@ -30,11 +30,7 @@
         //self.textLabel.backgroundColor          = self.backgroundColor;
         //self.detailTextLabel.backgroundColor    = self.backgroundColor;
         
-        //TextLabel
-        self.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        self.textLabel.numberOfLines = 0;
-        self.textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        
+        self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
         //Border width of 1 pixel:
         float borderWidth = 1.0/[UIScreen mainScreen].scale;
@@ -46,7 +42,7 @@
         [_imageView3.layer setBorderColor: [[UIColor whiteColor] CGColor]];
         [_imageView3.layer setBorderWidth: borderWidth];
         _imageView3.clipsToBounds = YES;
-        _imageView3.translatesAutoresizingMaskIntoConstraints = NO;
+        _imageView3.translatesAutoresizingMaskIntoConstraints = YES;
         _imageView3.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
         [self.contentView addSubview:_imageView3];
         
@@ -57,7 +53,7 @@
         [_imageView2.layer setBorderColor: [[UIColor whiteColor] CGColor]];
         [_imageView2.layer setBorderWidth: borderWidth];
         _imageView2.clipsToBounds = YES;
-        _imageView2.translatesAutoresizingMaskIntoConstraints = NO;
+        _imageView2.translatesAutoresizingMaskIntoConstraints = YES;
         _imageView2.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
         [self.contentView addSubview:_imageView2];
         
@@ -68,7 +64,7 @@
         [_imageView1.layer setBorderColor: [[UIColor whiteColor] CGColor]];
         [_imageView1.layer setBorderWidth: borderWidth];
         _imageView1.clipsToBounds = YES;
-        _imageView1.translatesAutoresizingMaskIntoConstraints = NO;
+        _imageView1.translatesAutoresizingMaskIntoConstraints = YES;
         _imageView1.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
         [self.contentView addSubview:_imageView1];
         
@@ -84,7 +80,7 @@
         _gradient.locations = @[ @0.0f, @0.5f, @1.0f ];
         [_gradientView.layer insertSublayer:_gradient atIndex:0];
         _gradientView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-        _gradientView.translatesAutoresizingMaskIntoConstraints = NO;
+        _gradientView.translatesAutoresizingMaskIntoConstraints = YES;
         [self.imageView1 addSubview:_gradientView];
         _gradientView.hidden = YES;
         
@@ -92,16 +88,53 @@
         _videoIcon = [UIImageView new];
         _videoIcon.contentMode = UIViewContentModeScaleAspectFill;
         _videoIcon.frame = CGRectMake(3,kAlbumThumbnailSize1.height - 4 - 8, 15, 8 );
-        _videoIcon.image = [UIImage imageNamed:@"VideoIcon"];
+        _videoIcon.image = [UIImage imageNamed:@"GMVideoIcon"];
         _videoIcon.clipsToBounds = YES;
-        _videoIcon.translatesAutoresizingMaskIntoConstraints = NO;
+        _videoIcon.translatesAutoresizingMaskIntoConstraints = YES;
         _videoIcon.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
         [self.imageView1 addSubview:_videoIcon];
-        _videoIcon.hidden = YES;
+        _videoIcon.hidden = NO;
+
         
-        //[self.contentView setNeedsLayout];
-        //[self.contentView layoutIfNeeded];
+        //TextLabel
+        self.textLabel.font = [UIFont fontWithName:@"Helvetica" size:17.0];
+        self.textLabel.numberOfLines = 1;
+        self.textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        self.detailTextLabel.font = [UIFont fontWithName:@"Helvetica" size:14.0];
+        self.detailTextLabel.numberOfLines = 1;
+        self.detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        //Set next text labels contraints :
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView1]-(offset)-[textLabel]-|"
+                                                                                 options:0
+                                                                                 metrics:@{@"offset": @(kAlbumImageToTextSpace)}
+                                                                                   views:@{@"textLabel": self.textLabel,
+                                                                                           @"imageView1": self.imageView1}]];
+        
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView1]-(offset)-[detailTextLabel]-|"
+                                                                                 options:0
+                                                                                 metrics:@{@"offset": @(kAlbumImageToTextSpace)}
+                                                                                   views:@{@"detailTextLabel": self.detailTextLabel,
+                                                                                           @"imageView1": self.imageView1}]];
+        
+        
+        [self.contentView addConstraints:@[[NSLayoutConstraint constraintWithItem:self.textLabel
+                                                                        attribute:NSLayoutAttributeBottom
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:self.textLabel.superview
+                                                                        attribute:NSLayoutAttributeCenterY
+                                                                       multiplier:1.f constant:0.f]]];
+        
+        [self.contentView addConstraints:@[[NSLayoutConstraint constraintWithItem:self.detailTextLabel
+                                                                        attribute:NSLayoutAttributeTop
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:self.textLabel.superview
+                                                                        attribute:NSLayoutAttributeCenterY
+                                                                       multiplier:1.f constant:+4.f]]];
     }
+    
+    
     
     return self;
 }
@@ -110,33 +143,8 @@
 {
     [super layoutSubviews];
     
-    CGRect tmpFrame = self.textLabel.frame;
-    tmpFrame.origin.x = kAlbumLeftToImageSpace + kAlbumThumbnailSize1.width + kAlbumImageToTextSpace;
-    self.textLabel.frame = tmpFrame;
-    self.textLabel.bounds = tmpFrame;
-    
-    tmpFrame = self.detailTextLabel.frame;
-    tmpFrame.origin.x = kAlbumLeftToImageSpace + kAlbumThumbnailSize1.width + kAlbumImageToTextSpace;
-    self.detailTextLabel.frame = tmpFrame;
-    self.detailTextLabel.bounds = tmpFrame;
-    
-    // Make sure the contentView does a layout pass here so that its subviews have their frames set, which we
-    // need to use to set the preferredMaxLayoutWidth below.
-    [self.contentView setNeedsLayout];
-    [self.contentView layoutIfNeeded];
-    
-    // Set the preferredMaxLayoutWidth of the mutli-line bodyLabel based on the evaluated width of the label's frame,
-    // as this will allow the text to wrap correctly, and as a result allow the label to take on the correct height.
-    self.textLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.textLabel.frame);
-}
+    //TODO Reduce text font size if the name label does not fit screen.
 
-- (void)bindFetchResults:(PHFetchResult *)assetsFetchResults
-{
-    
-}
-- (void)bindAssetCollection:(PHAssetCollection *)assetCollection
-{
-    
 }
 
 - (void)setVideoLayout:(BOOL)isVideo
