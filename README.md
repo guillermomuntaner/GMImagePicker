@@ -7,16 +7,12 @@ An image & video picker supporting multiple selection. Powered by the new iOS 8 
 
 ![Screenshot](GMImagePickerDemo.gif "Screenshot")  
 
-Also works as Popover on the iPad! (with customizable size)
-
-![Screenshot](ipad.jpg "Screenshot")
-
 ### Features
 1. Allows selection of multiple photos and videos, even from different albums.
 2. Optional bottom toolbar with information about users selection.
 3. Works in landscape orientation and allow screen rotation!
 4. It can be used as Popover on iPad, with customizable size.
-5. Full and customizable acces to smart collections, including **Favorites**, **Slo-mo** or **Recently deleted**. 
+5. Full and customizable acces to smart collections(**Favorites**, **Slo-mo** or **Recently deleted**). 
 6. Dynamically sized grid view, easy to customize and fully compatible with iPhone 6/6+ and iPad.
 7. Mimics UIImagePickerController in terms of features, appearance and behaviour.
 8. Fast & small memory footprint powered by PHCachingImageManager.
@@ -87,7 +83,7 @@ Before presenting the picker, you can customize some of its properties
     picker.colsInLandscape = 5;
     picker.minimumInteritemSpacing = 2.0;
 
-    //You can pick the smart collections you want to chose:
+    //You can pick the smart collections you want to show:
     _customSmartCollections = @[@(PHAssetCollectionSubtypeSmartAlbumFavorites),
                                 @(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded),
                                 @(PHAssetCollectionSubtypeSmartAlbumVideos),
@@ -99,6 +95,10 @@ Before presenting the picker, you can customize some of its properties
 ````
 
 #### Use it as popover
+Also works as Popover on the iPad! (with customizable size)
+
+![Screenshot](ipad.jpg "Screenshot")
+
 This code works in both iPhone & iPad
 ```` objective-c
     ...
