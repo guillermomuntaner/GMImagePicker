@@ -28,7 +28,7 @@ An image & video picker supporting multiple selection. Powered by the new iOS 8 
 pod 'GMImagePicker', '~> 0.0.1'
 ```
 
-If you don't know yet what CocoaPods is, you should ASAP. It is the standar dependency manager for iOS projects. You can read a good tutorial by [Ray Wenderlich here](http://www.raywenderlich.com/64546/introduction-to-cocoapods-2) 
+If you don't know yet what CocoaPods is, you should ASAP. It is the standard dependency manager for iOS projects. You can read a good tutorial by [Ray Wenderlich here](http://www.raywenderlich.com/64546/introduction-to-cocoapods-2) 
 
 ###### Manually 
 Download and import GMImagePicker folder into your project.
