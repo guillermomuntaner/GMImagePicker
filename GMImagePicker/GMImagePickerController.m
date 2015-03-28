@@ -42,6 +42,11 @@
         //If you don't want to show smart collections, just put _customSmartCollections to nil;
         //_customSmartCollections=nil;
         
+        //Which media types will display
+        _mediaTypes = @[@(PHAssetMediaTypeAudio),
+                        @(PHAssetMediaTypeVideo),
+                        @(PHAssetMediaTypeImage)];
+        
         self.preferredContentSize = kPopoverContentSize;
         
         [self setupNavigationController];
