@@ -25,6 +25,7 @@
         //Default values:
         _displaySelectionInfoToolbar = YES;
         _displayAlbumsNumberOfAssets = YES;
+        _autoDisableDoneButton = YES;
         
         //Grid configuration:
         _colsInPortrait = 3;
@@ -107,7 +108,7 @@
 {
     UINavigationController *nav = (UINavigationController *)self.childViewControllers[0];
     for (UIViewController *viewController in nav.viewControllers)
-        viewController.navigationItem.rightBarButtonItem.enabled = (self.selectedAssets.count > 0);
+        viewController.navigationItem.rightBarButtonItem.enabled = (self.autoDisableDoneButton ? self.selectedAssets.count > 0 : TRUE);
 }
 
 - (void)updateToolbar

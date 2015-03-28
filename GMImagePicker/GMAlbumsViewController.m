@@ -73,7 +73,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
                                     target:self.picker
                                     action:@selector(finishPickingAssets:)];
     
-    self.navigationItem.rightBarButtonItem.enabled = (self.picker.selectedAssets.count > 0);
+    self.navigationItem.rightBarButtonItem.enabled = (self.picker.autoDisableDoneButton ? self.picker.selectedAssets.count > 0 : TRUE);
     
     //Bottom toolbar
     self.toolbarItems = self.picker.toolbarItems;

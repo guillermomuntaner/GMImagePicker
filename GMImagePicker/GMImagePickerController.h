@@ -63,6 +63,11 @@ static CGSize const kPopoverContentSize = {480, 720};
 @property (nonatomic, assign) BOOL displayAlbumsNumberOfAssets;
 
 /**
+ *  Automatically disables the "Done" button if nothing is selected
+ */
+@property (nonatomic, assign) BOOL autoDisableDoneButton;
+
+/**
  *  Grid customizations:
  *
  *  - colsInPortrait: Number of columns in portrait (3 by default)
