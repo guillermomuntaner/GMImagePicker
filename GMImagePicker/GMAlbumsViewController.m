@@ -84,16 +84,6 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     else
         self.title = self.picker.title;
     
-
-    // TO-DO Customizable predicates:
-    // Predicate has to filter properties of the type of object returned by the PHFetchResult:
-    // PHCollectionList, PHAssetCollection and PHAsset require different predicates
-    // with limited posibilities (cannot filter a collection by mediaType for example)
-    
-    //NSPredicate *predicatePHCollectionList = [NSPredicate predicateWithFormat:@"(mediaType == %d)", PHAssetMediaTypeImage];
-    //NSPredicate *predicatePHAssetCollection = [NSPredicate predicateWithFormat:@"(mediaType == %d)", PHAssetMediaTypeImage];
-    //NSPredicate *predicatePHAsset = [NSPredicate predicateWithFormat:@"(mediaType == %d)", PHAssetMediaTypeImage];
-    
     //Fetch PHAssetCollections:
     PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
     PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
@@ -129,8 +119,8 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     NSMutableArray *allFetchResultLabel = [[NSMutableArray alloc] init];
     {
         PHFetchOptions *options = [[PHFetchOptions alloc] init];
+        options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
         options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-        //options.predicate = predicatePHAsset;
         PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithOptions:options];
         [allFetchResultArray addObject:assetsFetchResult];
         [allFetchResultLabel addObject:NSLocalizedStringFromTable(@"picker.table.all-photos-label", @"GMImagePicker",@"All photos")];
@@ -143,13 +133,13 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     {
         if ([collection isKindOfClass:[PHAssetCollection class]])
         {
-            //PHFetchOptions *options = [[PHFetchOptions alloc] init];
-            //options.predicate = predicatePHAsset;
+            PHFetchOptions *options = [[PHFetchOptions alloc] init];
+            options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
             PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
             
             //Albums collections are allways PHAssetCollectionType=1 & PHAssetCollectionSubtype=2
             
-            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
+            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
             [userFetchResultArray addObject:assetsFetchResult];
             [userFetchResultLabel addObject:collection.localizedTitle];
         }
@@ -169,8 +159,9 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             if(self.picker.customSmartCollections && [self.picker.customSmartCollections containsObject:@(assetCollection.assetCollectionSubtype)])
             {
                 PHFetchOptions *options = [[PHFetchOptions alloc] init];
+                options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
                 options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-                //options.predicate = predicatePHAsset;
+                
                 PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
                 if(assetsFetchResult.count>0)
                 {
@@ -184,6 +175,8 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     self.collectionsFetchResultsAssets= @[allFetchResultArray,userFetchResultArray,smartFetchResultArray];
     self.collectionsFetchResultsTitles= @[allFetchResultLabel,userFetchResultLabel,smartFetchResultLabel];
 }
+
+
 #pragma mark - Accessors
 
 - (GMImagePickerController *)picker
