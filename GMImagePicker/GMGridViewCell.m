@@ -86,7 +86,7 @@ static UIColor *disabledColor;
         _videoIcon = [UIImageView new];
         _videoIcon.frame = CGRectMake(x_offset, self.bounds.size.height-titleHeight, self.bounds.size.width-2*x_offset, titleHeight);
         _videoIcon.contentMode = UIViewContentModeLeft;
-        _videoIcon.image = [UIImage imageNamed:@"GMVideoIcon"];
+        _videoIcon.image = [UIImage imageNamed:@"GMVideoIcon" inBundle:[NSBundle bundleForClass:GMGridViewCell.class] compatibleWithTraitCollection:nil];
         _videoIcon.translatesAutoresizingMaskIntoConstraints = NO;
         _videoIcon.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
         [self addSubview:_videoIcon];
@@ -118,11 +118,10 @@ static UIColor *disabledColor;
         [_selectedButton setImage:nil forState:UIControlStateNormal];
         _selectedButton.translatesAutoresizingMaskIntoConstraints = NO;
         _selectedButton.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        [_selectedButton setImage:[UIImage imageNamed:@"GMSelected"] forState:UIControlStateSelected];
+        [_selectedButton setImage:[UIImage imageNamed:@"GMSelected" inBundle:[NSBundle bundleForClass:GMGridViewCell.class] compatibleWithTraitCollection:nil] forState:UIControlStateSelected];
         _selectedButton.hidden = NO;
         _selectedButton.userInteractionEnabled = NO;
         [self addSubview:_selectedButton];
-        
     }
     
     return self;
