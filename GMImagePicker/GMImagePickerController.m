@@ -96,8 +96,14 @@
     [self.selectedAssets insertObject:asset atIndex:self.selectedAssets.count];
     [self updateDoneButton];
     
-    if(self.displaySelectionInfoToolbar && self.allowMultipleSelection)
+    if (!self.allowMultipleSelection)
+    {
+        [self finishPickingAssets:self];
+    }
+    else if (self.displaySelectionInfoToolbar)
+    {
         [self updateToolbar];
+    }
 }
 
 - (void)deselectAsset:(PHAsset *)asset
