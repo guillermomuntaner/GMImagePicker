@@ -101,7 +101,7 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
         //NSLog(@"This is @%fx scale device", scale);
         AssetGridThumbnailSize = CGSizeMake(layout.itemSize.width * scale, layout.itemSize.height * scale);
         
-        self.collectionView.allowsMultipleSelection = YES;
+        self.collectionView.allowsMultipleSelection = picker.allowMultipleSelection;
         
         [self.collectionView registerClass:GMGridViewCell.class
                 forCellWithReuseIdentifier:GMGridViewCellIdentifier];
