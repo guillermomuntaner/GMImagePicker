@@ -26,6 +26,7 @@
         _displaySelectionInfoToolbar = YES;
         _displayAlbumsNumberOfAssets = YES;
         _autoDisableDoneButton = YES;
+        _allowMultipleSelection = YES;
         
         //Grid configuration:
         _colsInPortrait = 3;
@@ -95,8 +96,14 @@
     [self.selectedAssets insertObject:asset atIndex:self.selectedAssets.count];
     [self updateDoneButton];
     
-    if(self.displaySelectionInfoToolbar)
+    if (!self.allowMultipleSelection)
+    {
+        [self finishPickingAssets:self];
+    }
+    else if (self.displaySelectionInfoToolbar)
+    {
         [self updateToolbar];
+    }
 }
 
 - (void)deselectAsset:(PHAsset *)asset
@@ -105,7 +112,7 @@
     if(self.selectedAssets.count == 0)
         [self updateDoneButton];
     
-    if(self.displaySelectionInfoToolbar)
+    if(self.displaySelectionInfoToolbar && self.allowMultipleSelection)
         [self updateToolbar];
 }
 

@@ -82,6 +82,11 @@ static CGSize const kPopoverContentSize = {480, 720};
 @property (nonatomic, assign) BOOL autoDisableDoneButton;
 
 /**
+ *  Allow multiple selection of assets. If not allowed, toolbar is not displayed.
+ */
+@property (nonatomic, assign) BOOL allowMultipleSelection;
+
+/**
  *  Grid customizations:
  *
  *  - colsInPortrait: Number of columns in portrait (3 by default)
