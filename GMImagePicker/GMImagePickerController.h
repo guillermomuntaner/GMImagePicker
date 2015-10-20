@@ -65,6 +65,11 @@ static CGSize const kPopoverContentSize = {480, 720};
 @property (nonatomic) NSString* customNavigationBarPrompt;
 
 /**
+ *  If set, it overrides the title for the done button
+ */
+@property (nonatomic) NSString* customDoneButtonTitle;
+
+/**
  *  Determines whether or not a toolbar with info about user selection is shown.
  *  The InfoToolbar is visible by default.
  */
