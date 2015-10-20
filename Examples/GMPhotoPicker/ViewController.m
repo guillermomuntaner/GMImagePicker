@@ -37,6 +37,7 @@
     GMImagePickerController *picker = [[GMImagePickerController alloc] init];
     picker.delegate = self;
     picker.title = @"Custom title";
+    picker.customDoneButtonTitle = @"Done!!!";
     picker.customNavigationBarPrompt = @"Custom helper message!";
     picker.colsInPortrait = 3;
     picker.colsInLandscape = 5;
