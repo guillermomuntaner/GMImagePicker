@@ -62,13 +62,15 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
                                                                             target:self.picker
                                                                             action:@selector(dismiss:)];
 
-    NSString *doneTitle = self.picker.customDoneButtonTitle ? self.picker.customDoneButtonTitle : NSLocalizedStringFromTableInBundle(@"picker.navigation.done-button",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Done");
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:doneTitle
-                                                                              style:UIBarButtonItemStyleDone
-                                                                             target:self.picker
-                                                                             action:@selector(finishPickingAssets:)];
-    
-    self.navigationItem.rightBarButtonItem.enabled = (self.picker.autoDisableDoneButton ? self.picker.selectedAssets.count > 0 : TRUE);
+    if (self.picker.allowsMultipleSelection) {
+        NSString *doneTitle = self.picker.customDoneButtonTitle ? self.picker.customDoneButtonTitle : NSLocalizedStringFromTableInBundle(@"picker.navigation.done-button",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Done");
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:doneTitle
+                                                                                  style:UIBarButtonItemStyleDone
+                                                                                 target:self.picker
+                                                                                 action:@selector(finishPickingAssets:)];
+        
+        self.navigationItem.rightBarButtonItem.enabled = (self.picker.autoDisableDoneButton ? self.picker.selectedAssets.count > 0 : TRUE);
+    }
     
     //Bottom toolbar
     self.toolbarItems = self.picker.toolbarItems;

@@ -26,6 +26,7 @@
         _displaySelectionInfoToolbar = YES;
         _displayAlbumsNumberOfAssets = YES;
         _autoDisableDoneButton = YES;
+        _allowsMultipleSelection = YES;
         
         //Grid configuration:
         _colsInPortrait = 3;
@@ -73,6 +74,7 @@
     // Dispose of any resources that can be recreated.
 }
 
+
 #pragma mark - Setup Navigation Controller
 
 - (void)setupNavigationController
@@ -88,6 +90,7 @@
     [_navigationController didMoveToParentViewController:self];
 }
 
+
 #pragma mark - Select / Deselect Asset
 
 - (void)selectAsset:(PHAsset *)asset
@@ -95,43 +98,58 @@
     [self.selectedAssets insertObject:asset atIndex:self.selectedAssets.count];
     [self updateDoneButton];
     
-    if(self.displaySelectionInfoToolbar)
+    if (!self.allowsMultipleSelection) {
+        [self finishPickingAssets:self];
+    } else if (self.displaySelectionInfoToolbar) {
         [self updateToolbar];
+    }
 }
 
 - (void)deselectAsset:(PHAsset *)asset
 {
     [self.selectedAssets removeObjectAtIndex:[self.selectedAssets indexOfObject:asset]];
-    if(self.selectedAssets.count == 0)
+    if (self.selectedAssets.count == 0) {
         [self updateDoneButton];
+    }
     
-    if(self.displaySelectionInfoToolbar)
+    if (self.displaySelectionInfoToolbar) {
         [self updateToolbar];
+    }
 }
 
 - (void)updateDoneButton
 {
+    if (!self.allowsMultipleSelection) {
+        return;
+    }
+    
     UINavigationController *nav = (UINavigationController *)self.childViewControllers[0];
-    for (UIViewController *viewController in nav.viewControllers)
+    for (UIViewController *viewController in nav.viewControllers) {
         viewController.navigationItem.rightBarButtonItem.enabled = (self.autoDisableDoneButton ? self.selectedAssets.count > 0 : TRUE);
+    }
 }
 
 - (void)updateToolbar
 {
+    if (!self.allowsMultipleSelection) {
+        return;
+    }
+
     UINavigationController *nav = (UINavigationController *)self.childViewControllers[0];
-    for (UIViewController *viewController in nav.viewControllers)
-    {
+    for (UIViewController *viewController in nav.viewControllers) {
         [[viewController.toolbarItems objectAtIndex:1] setTitle:[self toolbarTitle]];
         [viewController.navigationController setToolbarHidden:(self.selectedAssets.count == 0) animated:YES];
     }
 }
 
+
 #pragma mark - User finish Actions
 
 - (void)dismiss:(id)sender
 {
-    if ([self.delegate respondsToSelector:@selector(assetsPickerControllerDidCancel:)])
+    if ([self.delegate respondsToSelector:@selector(assetsPickerControllerDidCancel:)]) {
         [self.delegate assetsPickerControllerDidCancel:self];
+    }
     
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
@@ -139,10 +157,9 @@
 
 - (void)finishPickingAssets:(id)sender
 {
-    if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)])
+    if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)]) {
         [self.delegate assetsPickerController:self didFinishPickingAssets:self.selectedAssets];
-    
-    //[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 
@@ -151,14 +168,15 @@
 - (NSPredicate *)predicateOfAssetType:(PHAssetMediaType)type
 {
     return [NSPredicate predicateWithBlock:^BOOL(PHAsset *asset, NSDictionary *bindings) {
-        return (asset.mediaType==type);
+        return (asset.mediaType == type);
     }];
 }
 
 - (NSString *)toolbarTitle
 {
-    if (self.selectedAssets.count == 0)
+    if (self.selectedAssets.count == 0) {
         return nil;
+    }
     
     NSPredicate *photoPredicate = [self predicateOfAssetType:PHAssetMediaTypeImage];
     NSPredicate *videoPredicate = [self predicateOfAssetType:PHAssetMediaTypeVideo];
@@ -166,28 +184,17 @@
     NSInteger nImages = [self.selectedAssets filteredArrayUsingPredicate:photoPredicate].count;
     NSInteger nVideos = [self.selectedAssets filteredArrayUsingPredicate:videoPredicate].count;
     
-    if (nImages>0 && nVideos>0)
-    {
+    if (nImages > 0 && nVideos > 0) {
         return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.selection.multiple-items",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"%@ Items Selected" ), @(nImages+nVideos)];
-    }
-    else if (nImages>1)
-    {
+    } else if (nImages > 1) {
         return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.selection.multiple-photos",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"%@ Photos Selected"), @(nImages)];
-    }
-    else if (nImages==1)
-    {
+    } else if (nImages == 1) {
         return NSLocalizedStringFromTableInBundle(@"picker.selection.single-photo",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"1 Photo Selected" );
-    }
-    else if (nVideos>1)
-    {
+    } else if (nVideos > 1) {
         return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.selection.multiple-videos",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"%@ Videos Selected"), @(nVideos)];
-    }
-    else if (nVideos==1)
-    {
+    } else if (nVideos == 1) {
         return NSLocalizedStringFromTableInBundle(@"picker.selection.single-video",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"1 Video Selected");
-    }
-    else
-    {
+    } else {
         return nil;
     }
 }
@@ -197,11 +204,10 @@
 
 - (UIBarButtonItem *)titleButtonItem
 {
-    UIBarButtonItem *title =
-    [[UIBarButtonItem alloc] initWithTitle:self.toolbarTitle
-                                     style:UIBarButtonItemStylePlain
-                                    target:nil
-                                    action:nil];
+    UIBarButtonItem *title = [[UIBarButtonItem alloc] initWithTitle:self.toolbarTitle
+                                                              style:UIBarButtonItemStylePlain
+                                                             target:nil
+                                                             action:nil];
     
     NSDictionary *attributes = @{NSForegroundColorAttributeName : [UIColor blackColor]};
     

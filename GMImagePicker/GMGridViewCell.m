@@ -123,7 +123,10 @@ static UIColor *disabledColor;
         _selectedButton.userInteractionEnabled = NO;
         [self addSubview:_selectedButton];
     }
-    
+
+    // Note: the views above are created in case this is toggled per cell, on the fly, etc.!
+    self.shouldShowSelection = YES;
+
     return self;
 }
 
@@ -156,6 +159,11 @@ static UIColor *disabledColor;
 - (void)setSelected:(BOOL)selected
 {
     [super setSelected:selected];
+    
+    if (!self.shouldShowSelection) {
+        return;
+    }
+    
     _coverView.hidden = !selected;
     _selectedButton.selected = selected;
 }

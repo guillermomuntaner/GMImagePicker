@@ -89,9 +89,15 @@ static CGSize const kPopoverContentSize = {480, 720};
 @property (nonatomic, assign) BOOL displayAlbumsNumberOfAssets;
 
 /**
- *  Automatically disables the "Done" button if nothing is selected
+ *  Automatically disables the "Done" button if nothing is selected. Defaults to YES.
  */
 @property (nonatomic, assign) BOOL autoDisableDoneButton;
+
+/**
+ *  Use the picker either for miltiple image selections, or just a single selection. In the case of a single selection
+ *  the VC is closed on selection so the Done button is neither displayed or used. Default is YES.
+ */
+@property (nonatomic, assign) BOOL allowsMultipleSelection;
 
 /**
  *  Grid customizations:
