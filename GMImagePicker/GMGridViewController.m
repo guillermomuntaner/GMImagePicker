@@ -155,8 +155,7 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-    {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         return;
     }
     
@@ -168,8 +167,7 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     
     [self resetCachedAssets];
     //This is optional. Reload visible thumbnails:
-    for (GMGridViewCell *cell in [self.collectionView visibleCells])
-    {
+    for (GMGridViewCell *cell in [self.collectionView visibleCells]) {
         NSInteger currentTag = cell.tag;
         [self.imageManager requestImageForAsset:cell.asset
                                      targetSize:AssetGridThumbnailSize
@@ -188,10 +186,6 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 }
 
 
-
-
-
-
 #pragma mark - Setup
 
 - (void)setupViews
@@ -201,11 +195,11 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 
 - (void)setupButtons
 {
-    self.navigationItem.rightBarButtonItem =
-    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"picker.navigation.done-button",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Done")
-                                     style:UIBarButtonItemStyleDone
-                                    target:self.picker
-                                    action:@selector(finishPickingAssets:)];
+    NSString *doneTitle = self.picker.customDoneButtonTitle ? self.picker.customDoneButtonTitle : NSLocalizedStringFromTableInBundle(@"picker.navigation.done-button",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Done");
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:doneTitle
+                                                                              style:UIBarButtonItemStyleDone
+                                                                             target:self.picker
+                                                                             action:@selector(finishPickingAssets:)];
     
     self.navigationItem.rightBarButtonItem.enabled = (self.picker.autoDisableDoneButton ? self.picker.selectedAssets.count > 0 : TRUE);
 }
@@ -215,8 +209,8 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     self.toolbarItems = self.picker.toolbarItems;
 }
 
-#pragma mark - Collection View Layout
 
+#pragma mark - Collection View Layout
 
 - (UICollectionViewFlowLayout *)collectionViewFlowLayoutForOrientation:(UIInterfaceOrientation)orientation
 {

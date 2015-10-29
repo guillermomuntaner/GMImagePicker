@@ -60,6 +60,18 @@ static CGSize const kPopoverContentSize = {480, 720};
 @property (nonatomic, strong) NSArray* mediaTypes;
 
 /**
+ *  If set, it displays a this string instead of the localised default of "Done" on the done button. Note also that this
+ *  is not used when a single selection is active since the selection of the chosen photo closes the VC thus rendering
+ *  the button pointless.
+ */
+@property (nonatomic) NSString* customDoneButtonTitle;
+
+/**
+ *  If set, it displays this string instead of the localised default of "Cancel" on the cancel button
+ */
+@property (nonatomic) NSString* customCancelButtonTitle;
+
+/**
  *  If set, it displays a promt in the navigation bar
  */
 @property (nonatomic) NSString* customNavigationBarPrompt;

@@ -46,8 +46,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     [super viewDidLoad];
     
     //Navigation bar customization_
-    if(self.picker.customNavigationBarPrompt)
-    {
+    if (self.picker.customNavigationBarPrompt) {
         self.navigationItem.prompt = self.picker.customNavigationBarPrompt;
     }
     
@@ -57,21 +56,17 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     self.tableView.rowHeight = kAlbumRowHeight;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
-    //Navigation bar items
-    //if (self.picker.showsCancelButton)
-    {
-        self.navigationItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"picker.navigation.cancel-button",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Cancel")
-                                         style:UIBarButtonItemStylePlain
-                                        target:self.picker
-                                        action:@selector(dismiss:)];
-    }
-    
-    self.navigationItem.rightBarButtonItem =
-    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"picker.navigation.done-button",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Done")
-                                     style:UIBarButtonItemStyleDone
-                                    target:self.picker
-                                    action:@selector(finishPickingAssets:)];
+    NSString *cancelTitle = self.picker.customCancelButtonTitle ? self.picker.customCancelButtonTitle : NSLocalizedStringFromTableInBundle(@"picker.navigation.cancel-button",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Cancel");
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:cancelTitle
+                                                                             style:UIBarButtonItemStylePlain
+                                                                            target:self.picker
+                                                                            action:@selector(dismiss:)];
+
+    NSString *doneTitle = self.picker.customDoneButtonTitle ? self.picker.customDoneButtonTitle : NSLocalizedStringFromTableInBundle(@"picker.navigation.done-button",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Done");
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:doneTitle
+                                                                              style:UIBarButtonItemStyleDone
+                                                                             target:self.picker
+                                                                             action:@selector(finishPickingAssets:)];
     
     self.navigationItem.rightBarButtonItem.enabled = (self.picker.autoDisableDoneButton ? self.picker.selectedAssets.count > 0 : TRUE);
     
@@ -79,10 +74,11 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     self.toolbarItems = self.picker.toolbarItems;
     
     //Title
-    if (!self.picker.title)
+    if (!self.picker.title) {
         self.title = NSLocalizedStringFromTableInBundle(@"picker.navigation.title",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Navigation bar default title");
-    else
+    } else {
         self.title = self.picker.title;
+    }
     
     //Fetch PHAssetCollections:
     PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
