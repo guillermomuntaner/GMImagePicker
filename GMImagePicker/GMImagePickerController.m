@@ -6,11 +6,12 @@
 //  Copyright (c) 2014 Guillermo Muntaner Perelló. All rights reserved.
 //
 
+#import <MobileCoreServices/MobileCoreServices.h>
 #import "GMImagePickerController.h"
 #import "GMAlbumsViewController.h"
 @import Photos;
 
-@interface GMImagePickerController () <UINavigationControllerDelegate>
+@interface GMImagePickerController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @end
 
@@ -22,18 +23,19 @@
     {
         _selectedAssets = [[NSMutableArray alloc] init];
         
-        //Default values:
+        // Default values:
         _displaySelectionInfoToolbar = YES;
         _displayAlbumsNumberOfAssets = YES;
         _autoDisableDoneButton = YES;
         _allowsMultipleSelection = YES;
+        _showCameraButton = NO;
         
-        //Grid configuration:
+        // Grid configuration:
         _colsInPortrait = 3;
         _colsInLandscape = 5;
         _minimumInteritemSpacing = 2.0;
         
-        //Sample of how to select the collections you want to display:
+        // Sample of how to select the collections you want to display:
         _customSmartCollections = @[@(PHAssetCollectionSubtypeSmartAlbumFavorites),
                                     @(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded),
                                     @(PHAssetCollectionSubtypeSmartAlbumVideos),
@@ -41,10 +43,10 @@
                                     @(PHAssetCollectionSubtypeSmartAlbumTimelapses),
                                     @(PHAssetCollectionSubtypeSmartAlbumBursts),
                                     @(PHAssetCollectionSubtypeSmartAlbumPanoramas)];
-        //If you don't want to show smart collections, just put _customSmartCollections to nil;
+        // If you don't want to show smart collections, just put _customSmartCollections to nil;
         //_customSmartCollections=nil;
         
-        //Which media types will display
+        // Which media types will display
         _mediaTypes = @[@(PHAssetMediaTypeAudio),
                         @(PHAssetMediaTypeVideo),
                         @(PHAssetMediaTypeImage)];
@@ -96,6 +98,8 @@
         attributes = @{NSForegroundColorAttributeName : _navigationBarTextColor};
     }
     _navigationController.navigationBar.titleTextAttributes = attributes;
+    
+    [self updateToolbar];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -132,7 +136,7 @@
     
     if (!self.allowsMultipleSelection) {
         [self finishPickingAssets:self];
-    } else if (self.displaySelectionInfoToolbar) {
+    } else if (self.displaySelectionInfoToolbar || self.showCameraButton) {
         [self updateToolbar];
     }
 }
@@ -169,11 +173,14 @@
 
     UINavigationController *nav = (UINavigationController *)self.childViewControllers[0];
     for (UIViewController *viewController in nav.viewControllers) {
-        // TODO: update this for new layout if camera button added
-        [[viewController.toolbarItems objectAtIndex:1] setTitleTextAttributes:[self toolbarTitleTextAttributes] forState:UIControlStateNormal];
-        [[viewController.toolbarItems objectAtIndex:1] setTitleTextAttributes:[self toolbarTitleTextAttributes] forState:UIControlStateDisabled];
-        [[viewController.toolbarItems objectAtIndex:1] setTitle:[self toolbarTitle]];
-        [viewController.navigationController setToolbarHidden:(self.selectedAssets.count == 0) animated:YES];
+        NSUInteger index = 1;
+        if (_showCameraButton) {
+            index++;
+        }
+        [[viewController.toolbarItems objectAtIndex:index] setTitleTextAttributes:[self toolbarTitleTextAttributes] forState:UIControlStateNormal];
+        [[viewController.toolbarItems objectAtIndex:index] setTitleTextAttributes:[self toolbarTitleTextAttributes] forState:UIControlStateDisabled];
+        [[viewController.toolbarItems objectAtIndex:index] setTitle:[self toolbarTitle]];
+        [viewController.navigationController setToolbarHidden:(self.selectedAssets.count == 0 && !self.showCameraButton) animated:YES];
     }
 }
 
@@ -237,6 +244,33 @@
 
 #pragma mark - Toolbar Items
 
+- (void)cameraButtonPressed:(UIBarButtonItem *)button
+{
+    if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Camera!"
+                                                        message:@"Sorry, this device does not have a camera."
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+
+        return;
+    }
+    
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    picker.mediaTypes = @[(NSString *)kUTTypeImage];
+    picker.allowsEditing = NO;
+    picker.delegate = self;
+    picker.modalPresentationStyle = UIModalPresentationPopover;
+    
+    UIPopoverPresentationController *popPC = picker.popoverPresentationController;
+    popPC.permittedArrowDirections = UIPopoverArrowDirectionAny;
+    popPC.barButtonItem = button;
+    
+    [self showViewController:picker sender:button];
+}
+
 - (NSDictionary *)toolbarTitleTextAttributes {
     return @{NSForegroundColorAttributeName : _toolbarTextColor,
              NSFontAttributeName : [UIFont fontWithName:_pickerFontName size:_pickerFontHeaderSize]};
@@ -250,7 +284,6 @@
                                                              action:nil];
     
     NSDictionary *attributes = [self toolbarTitleTextAttributes];
-    
     [title setTitleTextAttributes:attributes forState:UIControlStateNormal];
     [title setTitleTextAttributes:attributes forState:UIControlStateDisabled];
     [title setEnabled:NO];
@@ -263,14 +296,62 @@
     return [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 }
 
-- (NSArray *)toolbarItems
+- (UIBarButtonItem *)cameraButtonItem
 {
-    // TODO: Camera icon
-    UIBarButtonItem *title = [self titleButtonItem];
-    UIBarButtonItem *space = [self spaceButtonItem];
-    
-    return @[space, title, space];
+    return [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(cameraButtonPressed:)];
 }
 
+- (NSArray *)toolbarItems
+{
+    UIBarButtonItem *camera = [self cameraButtonItem];
+    UIBarButtonItem *title  = [self titleButtonItem];
+    UIBarButtonItem *space  = [self spaceButtonItem];
+    
+    NSMutableArray *items = [[NSMutableArray alloc] init];
+    if (_showCameraButton) {
+        [items addObject:camera];
+    }
+    [items addObject:space];
+    [items addObject:title];
+    [items addObject:space];
+    
+    return [NSArray arrayWithArray:items];
+}
+
+
+#pragma mark - Camera Delegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
+{
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+
+    NSString *mediaType = info[UIImagePickerControllerMediaType];
+    if ([mediaType isEqualToString:(NSString *)kUTTypeImage]) {
+        UIImage *image = info[UIImagePickerControllerOriginalImage];
+        UIImageWriteToSavedPhotosAlbum(image,
+                                       self,
+                                       @selector(image:finishedSavingWithError:contextInfo:),
+                                       nil);
+    }
+}
+
+-(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)image:(UIImage *)image finishedSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
+{
+    if (error) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Image Not Saved"
+                                                        message:@"Sorry, unable to save the new image!"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+    }
+    
+    // Note: The image view will auto refresh as the photo's are being observed in the other VCs
+}
 
 @end

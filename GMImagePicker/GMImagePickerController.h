@@ -100,6 +100,12 @@ static CGSize const kPopoverContentSize = {480, 720};
 @property (nonatomic, assign) BOOL allowsMultipleSelection;
 
 /**
+ *  True to always show the toolbar, with a camera button allowing new photos to be taken. False to auto show/hide the
+ *  toolbar, and have no camera button. Default is false. If true, this renders displaySelectionInfoToolbar a no-op.
+ */
+@property (nonatomic, assign) BOOL showCameraButton;
+
+/**
  *  Grid customizations:
  *
  *  - colsInPortrait: Number of columns in portrait (3 by default)
@@ -121,7 +127,7 @@ static CGSize const kPopoverContentSize = {480, 720};
  * - navigationBarBackgroundColor: The background of the navigation bar. Defaults to [UIColor whiteColor]
  * - navigationBarTextColor: The color for the text in the navigation bar. Defaults to [UIColor darkTextColor]
  * - navigationBarTintColor: The tint color used for any buttons on the navigation Bar
- * - pickerFontName: The font to use everywhere. Defaults to HelveticaNeue. It is advised if you set this to check, and possibly set, appropriately the custom font sizes.
+ * - pickerFontName: The font to use everywhere. Defaults to HelveticaNeue. It is advised if you set this to check, and possibly set, appropriately the custom font sizes. For font information, check http://www.iosfonts.com/
  * - pickerFontName: The font to use everywhere. Defaults to HelveticaNeue-Bold. It is advised if you set this to check, and possibly set, appropriately the custom font sizes.
  * - pickerFontNormalSize: The size of the custom font used in most places. Defaults to 14.0f
  * - pickerFontHeaderSize: The size of the custom font for album names. Defaults to 17.0f
