@@ -120,8 +120,8 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     [super viewDidLoad];
     [self setupViews];
     
-    //Navigation bar customization_
-    if(self.picker.customNavigationBarPrompt) {
+    // Navigation bar customization
+    if (self.picker.customNavigationBarPrompt) {
         self.navigationItem.prompt = self.picker.customNavigationBarPrompt;
     }
     
@@ -150,6 +150,9 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return self.picker.pickerStatusBarStyle;
+}
 
 
 #pragma mark - Rotation
@@ -191,7 +194,8 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 
 - (void)setupViews
 {
-    self.collectionView.backgroundColor = [UIColor whiteColor];
+    self.collectionView.backgroundColor = [UIColor clearColor];
+    self.view.backgroundColor = [UIColor clearColor];
 }
 
 - (void)setupButtons
@@ -211,6 +215,14 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
                                                                                  target:self.picker
                                                                                  action:@selector(dismiss:)];
     }
+    if (self.picker.useCustomFontForNavigationBar) {
+        if (self.picker.useCustomFontForNavigationBar) {
+            NSDictionary* barButtonItemAttributes = @{NSFontAttributeName: [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontHeaderSize]};
+            [self.navigationItem.rightBarButtonItem setTitleTextAttributes:barButtonItemAttributes forState:UIControlStateNormal];
+            [self.navigationItem.rightBarButtonItem setTitleTextAttributes:barButtonItemAttributes forState:UIControlStateSelected];
+        }
+    }
+
 }
 
 - (void)setupToolbar
@@ -325,29 +337,22 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     }
     
     
-    
     [cell bind:asset];
     
     cell.shouldShowSelection = self.picker.allowsMultipleSelection;
     
-    //Optional protocol to determine if some kind of assets can't be selected (pej long videos, etc...)
-    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldEnableAsset:)])
-    {
+    // Optional protocol to determine if some kind of assets can't be selected (pej long videos, etc...)
+    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldEnableAsset:)]) {
         cell.enabled = [self.picker.delegate assetsPickerController:self.picker shouldEnableAsset:asset];
-    }
-    else
-    {
+    } else {
         cell.enabled = YES;
     }
     
     // Setting `selected` property blocks further deselection. Have to call selectItemAtIndexPath too. ( ref: http://stackoverflow.com/a/17812116/1648333 )
-    if ([self.picker.selectedAssets containsObject:asset])
-    {
+    if ([self.picker.selectedAssets containsObject:asset]) {
         cell.selected = YES;
         [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
-    }
-    else
-    {
+    } else {
         cell.selected = NO;
     }
     

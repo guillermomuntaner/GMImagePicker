@@ -51,27 +51,55 @@
         
         self.preferredContentSize = kPopoverContentSize;
         
+        // UI Customisation
+        _pickerBackgroundColor = [UIColor whiteColor];
+        _pickerTextColor = [UIColor darkTextColor];
+        _pickerFontName = @"HelveticaNeue";
+        _pickerBoldFontName = @"HelveticaNeue-Bold";
+        _pickerFontNormalSize = 14.0f;
+        _pickerFontHeaderSize = 17.0f;
+        
+        _navigationBarBackgroundColor = [UIColor whiteColor];
+        _navigationBarTextColor = [UIColor darkTextColor];
+        _navigationBarTintColor = [UIColor darkTextColor];
+        
+        _toolbarBarTintColor = [UIColor whiteColor];
+        _toolbarTextColor = [UIColor darkTextColor];
+        _toolbarTintColor = [UIColor darkTextColor];
+        
+        _pickerStatusBarStyle = UIStatusBarStyleDefault;
+        
         [self setupNavigationController];
     }
     return self;
 }
 
-- (void)dealloc
+- (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+
+    // Ensure nav and toolbar customisations are set. Defaults are in place, but the user may have changed them
+    self.view.backgroundColor = _pickerBackgroundColor;
+
+    _navigationController.toolbar.translucent = YES;
+    _navigationController.toolbar.barTintColor = _toolbarBarTintColor;
+    _navigationController.toolbar.tintColor = _toolbarTintColor;
+    [(UIView*)[_navigationController.toolbar.subviews objectAtIndex:0] setAlpha:0.75f];  // URGH - I know!
     
+    _navigationController.navigationBar.backgroundColor = _navigationBarBackgroundColor;
+    _navigationController.navigationBar.tintColor = _navigationBarTintColor;
+    NSDictionary *attributes;
+    if (_useCustomFontForNavigationBar) {
+        attributes = @{NSForegroundColorAttributeName : _navigationBarTextColor,
+                       NSFontAttributeName : [UIFont fontWithName:_pickerBoldFontName size:_pickerFontHeaderSize]};
+    } else {
+        attributes = @{NSForegroundColorAttributeName : _navigationBarTextColor};
+    }
+    _navigationController.navigationBar.titleTextAttributes = attributes;
 }
 
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return _pickerStatusBarStyle;
 }
 
 
@@ -82,6 +110,10 @@
     GMAlbumsViewController *albumsViewController = [[GMAlbumsViewController alloc] init];
     _navigationController = [[UINavigationController alloc] initWithRootViewController:albumsViewController];
     _navigationController.delegate = self;
+    
+    _navigationController.navigationBar.translucent = YES;
+    [_navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    _navigationController.navigationBar.shadowImage = [UIImage new];
     
     [_navigationController willMoveToParentViewController:self];
     [_navigationController.view setFrame:self.view.frame];
@@ -137,6 +169,9 @@
 
     UINavigationController *nav = (UINavigationController *)self.childViewControllers[0];
     for (UIViewController *viewController in nav.viewControllers) {
+        // TODO: update this for new layout if camera button added
+        [[viewController.toolbarItems objectAtIndex:1] setTitleTextAttributes:[self toolbarTitleTextAttributes] forState:UIControlStateNormal];
+        [[viewController.toolbarItems objectAtIndex:1] setTitleTextAttributes:[self toolbarTitleTextAttributes] forState:UIControlStateDisabled];
         [[viewController.toolbarItems objectAtIndex:1] setTitle:[self toolbarTitle]];
         [viewController.navigationController setToolbarHidden:(self.selectedAssets.count == 0) animated:YES];
     }
@@ -202,6 +237,11 @@
 
 #pragma mark - Toolbar Items
 
+- (NSDictionary *)toolbarTitleTextAttributes {
+    return @{NSForegroundColorAttributeName : _toolbarTextColor,
+             NSFontAttributeName : [UIFont fontWithName:_pickerFontName size:_pickerFontHeaderSize]};
+}
+
 - (UIBarButtonItem *)titleButtonItem
 {
     UIBarButtonItem *title = [[UIBarButtonItem alloc] initWithTitle:self.toolbarTitle
@@ -209,7 +249,7 @@
                                                              target:nil
                                                              action:nil];
     
-    NSDictionary *attributes = @{NSForegroundColorAttributeName : [UIColor blackColor]};
+    NSDictionary *attributes = [self toolbarTitleTextAttributes];
     
     [title setTitleTextAttributes:attributes forState:UIControlStateNormal];
     [title setTitleTextAttributes:attributes forState:UIControlStateDisabled];
@@ -225,6 +265,7 @@
 
 - (NSArray *)toolbarItems
 {
+    // TODO: Camera icon
     UIBarButtonItem *title = [self titleButtonItem];
     UIBarButtonItem *space = [self spaceButtonItem];
     

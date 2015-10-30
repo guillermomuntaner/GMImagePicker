@@ -30,8 +30,7 @@
 
 - (id)init
 {
-    if (self = [super initWithStyle:UITableViewStylePlain])
-    {
+    if (self = [super initWithStyle:UITableViewStylePlain]) {
         self.preferredContentSize = kPopoverContentSize;
     }
     
@@ -45,22 +44,31 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
 {
     [super viewDidLoad];
     
-    //Navigation bar customization_
+    self.view.backgroundColor = [UIColor clearColor];
+
+    // Navigation bar customization
     if (self.picker.customNavigationBarPrompt) {
         self.navigationItem.prompt = self.picker.customNavigationBarPrompt;
     }
     
     self.imageManager = [[PHCachingImageManager alloc] init];
     
-    //Table view aspect
+    // Table view aspect
     self.tableView.rowHeight = kAlbumRowHeight;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+
+    // Buttons
+    NSDictionary* barButtonItemAttributes = @{NSFontAttributeName: [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontHeaderSize]};
 
     NSString *cancelTitle = self.picker.customCancelButtonTitle ? self.picker.customCancelButtonTitle : NSLocalizedStringFromTableInBundle(@"picker.navigation.cancel-button",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Cancel");
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:cancelTitle
                                                                              style:UIBarButtonItemStylePlain
                                                                             target:self.picker
                                                                             action:@selector(dismiss:)];
+    if (self.picker.useCustomFontForNavigationBar) {
+        [self.navigationItem.leftBarButtonItem setTitleTextAttributes:barButtonItemAttributes forState:UIControlStateNormal];
+        [self.navigationItem.leftBarButtonItem setTitleTextAttributes:barButtonItemAttributes forState:UIControlStateSelected];
+    }
 
     if (self.picker.allowsMultipleSelection) {
         NSString *doneTitle = self.picker.customDoneButtonTitle ? self.picker.customDoneButtonTitle : NSLocalizedStringFromTableInBundle(@"picker.navigation.done-button",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Done");
@@ -68,21 +76,25 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
                                                                                   style:UIBarButtonItemStyleDone
                                                                                  target:self.picker
                                                                                  action:@selector(finishPickingAssets:)];
+        if (self.picker.useCustomFontForNavigationBar) {
+            [self.navigationItem.rightBarButtonItem setTitleTextAttributes:barButtonItemAttributes forState:UIControlStateNormal];
+            [self.navigationItem.rightBarButtonItem setTitleTextAttributes:barButtonItemAttributes forState:UIControlStateSelected];
+        }
         
         self.navigationItem.rightBarButtonItem.enabled = (self.picker.autoDisableDoneButton ? self.picker.selectedAssets.count > 0 : TRUE);
     }
     
-    //Bottom toolbar
+    // Bottom toolbar
     self.toolbarItems = self.picker.toolbarItems;
     
-    //Title
+    // Title
     if (!self.picker.title) {
         self.title = NSLocalizedStringFromTableInBundle(@"picker.navigation.title",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Navigation bar default title");
     } else {
         self.title = self.picker.title;
     }
     
-    //Fetch PHAssetCollections:
+    // Fetch PHAssetCollections:
     PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
     PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
     self.collectionsFetchResults = @[topLevelUserCollections, smartAlbums];
@@ -90,13 +102,17 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     
     [self updateFetchResults];
     
-    //Register for changes
+    // Register for changes
     [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
 }
 
 - (void)dealloc
 {
     [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return self.picker.pickerStatusBarStyle;
 }
 
 -(void)updateFetchResults
@@ -190,10 +206,11 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     return YES;
 }
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAllButUpsideDown;
 }
+
 
 #pragma mark - UITableViewDataSource
 
@@ -222,21 +239,21 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     NSInteger currentTag = cell.tag + 1;
     cell.tag = currentTag;
 
-    //Set the label
+    // Set the label
+    cell.textLabel.font = [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontHeaderSize];
     cell.textLabel.text = (self.collectionsFetchResultsTitles[indexPath.section])[indexPath.row];
     
-    //Retrieve the pre-fetched assets for this album:
+    // Retrieve the pre-fetched assets for this album:
     PHFetchResult *assetsFetchResult = (self.collectionsFetchResultsAssets[indexPath.section])[indexPath.row];
     
-    //Display the number of assets
-    if(self.picker.displayAlbumsNumberOfAssets)
-    {
+    // Display the number of assets
+    if (self.picker.displayAlbumsNumberOfAssets) {
+        cell.textLabel.font = [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontNormalSize];
         cell.detailTextLabel.text = [self tableCellSubtitle:assetsFetchResult];
     }
     
-    //Set the 3 images (if exists):
-    if([assetsFetchResult count]>0)
-    {
+    // Set the 3 images (if exists):
+    if ([assetsFetchResult count] > 0) {
         CGFloat scale = [UIScreen mainScreen].scale;
         
         //Compute the thumbnail pixel size:
@@ -247,18 +264,15 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
                                      targetSize:tableCellThumbnailSize1
                                     contentMode:PHImageContentModeAspectFill
                                         options:nil
-                                  resultHandler:^(UIImage *result, NSDictionary *info)
-         {
-             if (cell.tag == currentTag)
-             {
+                                  resultHandler:^(UIImage *result, NSDictionary *info) {
+             if (cell.tag == currentTag) {
                  cell.imageView1.image = result;
              }
          }];
         
-        //Second & third images:
-        // TO DO: Only preload the 3pixels height visible frame!
-        if([assetsFetchResult count]>1)
-        {
+        // Second & third images:
+        // TODO: Only preload the 3pixels height visible frame!
+        if ([assetsFetchResult count] > 1) {
             //Compute the thumbnail pixel size:
             CGSize tableCellThumbnailSize2 = CGSizeMake(kAlbumThumbnailSize2.width*scale, kAlbumThumbnailSize2.height*scale);
             PHAsset *asset = assetsFetchResult[1];
@@ -266,41 +280,31 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
                                          targetSize:tableCellThumbnailSize2
                                         contentMode:PHImageContentModeAspectFill
                                             options:nil
-                                      resultHandler:^(UIImage *result, NSDictionary *info)
-             {
-                 if (cell.tag == currentTag)
-                 {
+                                      resultHandler:^(UIImage *result, NSDictionary *info) {
+                 if (cell.tag == currentTag) {
                      cell.imageView2.image = result;
                  }
              }];
-        }
-        else
-        {
+        } else {
             cell.imageView2.image = nil;
         }
-        if([assetsFetchResult count]>2)
-        {
+        
+        if ([assetsFetchResult count] > 2) {
             CGSize tableCellThumbnailSize3 = CGSizeMake(kAlbumThumbnailSize3.width*scale, kAlbumThumbnailSize3.height*scale);
             PHAsset *asset = assetsFetchResult[2];
             [self.imageManager requestImageForAsset:asset
                                          targetSize:tableCellThumbnailSize3
                                         contentMode:PHImageContentModeAspectFill
                                             options:nil
-                                      resultHandler:^(UIImage *result, NSDictionary *info)
-             {
-                 if (cell.tag == currentTag)
-                 {
+                                      resultHandler:^(UIImage *result, NSDictionary *info) {
+                 if (cell.tag == currentTag) {
                      cell.imageView3.image = result;
                  }
              }];
-        }
-        else
-        {
+        } else {
             cell.imageView3.image = nil;
         }
-    }
-    else
-    {
+    } else {
         [cell setVideoLayout:NO];
         cell.imageView3.image = [UIImage imageNamed:@"EmptyFolder"];
         cell.imageView2.image = [UIImage imageNamed:@"EmptyFolder"];
@@ -327,16 +331,15 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     [self.navigationController pushViewController:gridViewController animated:YES];
 }
 
-#pragma mark  Header
-
 -(void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
 {
     UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
-    
-    //Here you can customize header views!
-    header.textLabel.font = [UIFont systemFontOfSize:14.0f]; //Set font to "normal" style (default is bold) and to 14 pts.
-    //header.textLabel.font = [UIFont boldSystemFontOfSize:14.0f];
-    //header.textLabel.textColor = [UIColor orangeColor];
+    header.backgroundColor = [UIColor clearColor];
+    header.backgroundView.backgroundColor = [UIColor clearColor];
+
+    // Default is a bold font, but keep this styled as a normal font
+    header.textLabel.font = [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontNormalSize];
+    header.textLabel.textColor = self.picker.pickerTextColor;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -344,12 +347,10 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     //Tip: Returning nil hides the section header!
     
     NSString *title = nil;
-    if (section > 0)
-    {
-        //Only show title for non-empty sections:
+    if (section > 0) {
+        // Only show title for non-empty sections:
         PHFetchResult *fetchResult = self.collectionsFetchResultsAssets[section];
-        if( fetchResult.count >0)
-        {
+        if (fetchResult.count > 0) {
             title = self.collectionsLocalizedTitles[section - 1];
         }
     }
@@ -376,14 +377,13 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             }
         }
         
-        //This only affects to changes in albums level (add/remove/edit album)
-        if (updatedCollectionsFetchResults)
-        {
+        // This only affects to changes in albums level (add/remove/edit album)
+        if (updatedCollectionsFetchResults) {
             self.collectionsFetchResults = updatedCollectionsFetchResults;
         }
         
-        //However, we want to update if photos are added, so the counts of items & thumbnails are updated too.
-        //Maybe some checks could be done here , but for now is OKey.
+        // However, we want to update if photos are added, so the counts of items & thumbnails are updated too.
+        // Maybe some checks could be done here , but for now is OKey.
         [self updateFetchResults];
         [self.tableView reloadData];
         
@@ -396,7 +396,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
 
 - (NSString *)tableCellSubtitle:(PHFetchResult*)assetsFetchResult
 {
-    //Just return the number of assets. Album app does this:
+    // Just return the number of assets. Album app does this:
     return [NSString stringWithFormat:@"%ld", (long)[assetsFetchResult count]];
 }
 

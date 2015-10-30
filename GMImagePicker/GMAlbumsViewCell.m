@@ -25,17 +25,18 @@
     
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
-        //self.opaque                             = YES;
-        //self.isAccessibilityElement             = YES;
-        //self.textLabel.backgroundColor          = self.backgroundColor;
-        //self.detailTextLabel.backgroundColor    = self.backgroundColor;
-        
+        self.opaque                             = NO;
+        self.backgroundColor                    = [UIColor clearColor];
+        self.textLabel.backgroundColor          = self.backgroundColor;
+        self.detailTextLabel.backgroundColor    = self.backgroundColor;
+        // self.isAccessibilityElement             = YES;
+
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
-        //Border width of 1 pixel:
+        // Border width of 1 pixel:
         float borderWidth = 1.0/[UIScreen mainScreen].scale;
         
-        //ImageView
+        // ImageView
         _imageView3 = [UIImageView new];
         _imageView3.contentMode = UIViewContentModeScaleAspectFill;
         _imageView3.frame = CGRectMake(kAlbumLeftToImageSpace+4, 8, kAlbumThumbnailSize3.width, kAlbumThumbnailSize3.height );
@@ -46,7 +47,7 @@
         _imageView3.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
         [self.contentView addSubview:_imageView3];
         
-        //ImageView
+        // ImageView
         _imageView2 = [UIImageView new];
         _imageView2.contentMode = UIViewContentModeScaleAspectFill;
         _imageView2.frame = CGRectMake(kAlbumLeftToImageSpace+2, 8+2, kAlbumThumbnailSize2.width, kAlbumThumbnailSize2.height );
@@ -57,7 +58,7 @@
         _imageView2.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
         [self.contentView addSubview:_imageView2];
         
-        //ImageView
+        // ImageView
         _imageView1 = [UIImageView new];
         _imageView1.contentMode = UIViewContentModeScaleAspectFill;
         _imageView1.frame = CGRectMake(kAlbumLeftToImageSpace, 8+4, kAlbumThumbnailSize1.width, kAlbumThumbnailSize1.height );
@@ -84,7 +85,7 @@
         [self.imageView1 addSubview:_gradientView];
         _gradientView.hidden = YES;
         
-        //VideoIcon
+        // VideoIcon
         _videoIcon = [UIImageView new];
         _videoIcon.contentMode = UIViewContentModeScaleAspectFill;
         _videoIcon.frame = CGRectMake(3,kAlbumThumbnailSize1.height - 4 - 8, 15, 8 );
@@ -95,17 +96,18 @@
         [self.imageView1 addSubview:_videoIcon];
         _videoIcon.hidden = NO;
 
-        
-        //TextLabel
-        self.textLabel.font = [UIFont fontWithName:@"Helvetica" size:17.0];
+        // TextLabel
+        self.textLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:17.0];
         self.textLabel.numberOfLines = 1;
         self.textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        self.detailTextLabel.font = [UIFont fontWithName:@"Helvetica" size:14.0];
+        self.textLabel.adjustsFontSizeToFitWidth = YES;
+
+        self.detailTextLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14.0];
         self.detailTextLabel.numberOfLines = 1;
         self.detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        self.detailTextLabel.adjustsFontSizeToFitWidth = YES;
         
-        //Set next text labels contraints :
+        // Set next text labels contraints :
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView1]-(offset)-[textLabel]-|"
                                                                                  options:0
                                                                                  metrics:@{@"offset": @(kAlbumImageToTextSpace)}
@@ -139,24 +141,13 @@
     return self;
 }
 
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-    
-    //TODO Reduce text font size if the name label does not fit screen.
-
-}
-
 - (void)setVideoLayout:(BOOL)isVideo
 {
-    //TODO : Add additional icons for slowmo, burst, etc...
-    if (isVideo)
-    {
+    // TODO : Add additional icons for slowmo, burst, etc...
+    if (isVideo) {
         _videoIcon.hidden = NO;
         _gradientView.hidden = NO;
-    }
-    else
-    {
+    } else {
         _videoIcon.hidden = YES;
         _gradientView.hidden = YES;
     }

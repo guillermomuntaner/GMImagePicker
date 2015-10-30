@@ -44,8 +44,7 @@ static UIColor *disabledColor;
 
 - (id)initWithFrame:(CGRect)frame
 {
-    if (self = [super initWithFrame:frame])
-    {
+    if (self = [super initWithFrame:frame]) {
         self.opaque                 = NO;
         self.enabled                = YES;
         
@@ -130,7 +129,7 @@ static UIColor *disabledColor;
     return self;
 }
 
-//Required to resize the CAGradientLayer because it does not support auto resizing.
+// Required to resize the CAGradientLayer because it does not support auto resizing.
 - (void)layoutSubviews {
     [super layoutSubviews];
     _gradient.frame = _gradientView.bounds;
@@ -140,15 +139,12 @@ static UIColor *disabledColor;
 {
     self.asset  = asset;
     
-    if (self.asset.mediaType == PHAssetMediaTypeVideo)
-    {
+    if (self.asset.mediaType == PHAssetMediaTypeVideo) {
         _videoIcon.hidden = NO;
         _videoDuration.hidden = NO;
         _gradientView.hidden = NO;
         _videoDuration.text = [self getDurationWithFormat:self.asset.duration];
-    }
-    else
-    {
+    } else {
         _videoIcon.hidden = YES;
         _videoDuration.hidden = YES;
         _gradientView.hidden = YES;
