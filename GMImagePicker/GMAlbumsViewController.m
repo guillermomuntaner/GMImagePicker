@@ -242,14 +242,16 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     // Set the label
     cell.textLabel.font = [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontHeaderSize];
     cell.textLabel.text = (self.collectionsFetchResultsTitles[indexPath.section])[indexPath.row];
+    cell.textLabel.textColor = self.picker.pickerTextColor;
     
     // Retrieve the pre-fetched assets for this album:
     PHFetchResult *assetsFetchResult = (self.collectionsFetchResultsAssets[indexPath.section])[indexPath.row];
     
     // Display the number of assets
     if (self.picker.displayAlbumsNumberOfAssets) {
-        cell.textLabel.font = [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontNormalSize];
+        cell.detailTextLabel.font = [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontNormalSize];
         cell.detailTextLabel.text = [self tableCellSubtitle:assetsFetchResult];
+        cell.detailTextLabel.textColor = self.picker.pickerTextColor;
     }
     
     // Set the 3 images (if exists):
@@ -320,14 +322,17 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
 {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     
-    //Init the GMGridViewController
+    // Init the GMGridViewController
     GMGridViewController *gridViewController = [[GMGridViewController alloc] initWithPicker:[self picker]];
-    //Set the title
+    // Set the title
     gridViewController.title = cell.textLabel.text;
-    //Use the prefetched assets!
+    // Use the prefetched assets!
     gridViewController.assetsFetchResults = [[_collectionsFetchResultsAssets objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     
-    //Push GMGridViewController
+    // Remove selection so it looks better on slide in
+    [tableView deselectRowAtIndexPath:indexPath animated:true];
+    
+    // Push GMGridViewController
     [self.navigationController pushViewController:gridViewController animated:YES];
 }
 

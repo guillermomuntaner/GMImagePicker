@@ -148,7 +148,7 @@
         [self updateDoneButton];
     }
     
-    if (self.displaySelectionInfoToolbar) {
+    if (self.displaySelectionInfoToolbar || self.showCameraButton) {
         [self updateToolbar];
     }
 }
@@ -180,7 +180,7 @@
         [[viewController.toolbarItems objectAtIndex:index] setTitleTextAttributes:[self toolbarTitleTextAttributes] forState:UIControlStateNormal];
         [[viewController.toolbarItems objectAtIndex:index] setTitleTextAttributes:[self toolbarTitleTextAttributes] forState:UIControlStateDisabled];
         [[viewController.toolbarItems objectAtIndex:index] setTitle:[self toolbarTitle]];
-        [viewController.navigationController setToolbarHidden:(self.selectedAssets.count == 0 && !self.showCameraButton) animated:YES];
+        [viewController.navigationController setToolbarHidden:(self.selectedAssets.count == 0 && self.showCameraButton != YES) animated:YES];
     }
 }
 
