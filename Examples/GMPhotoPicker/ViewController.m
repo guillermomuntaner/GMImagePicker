@@ -73,6 +73,7 @@
     popPC.permittedArrowDirections = UIPopoverArrowDirectionAny;
     popPC.sourceView = _gmImagePickerButton;
     popPC.sourceRect = _gmImagePickerButton.bounds;
+//    popPC.backgroundColor = [UIColor blackColor];
     
     [self showViewController:picker sender:nil];
 }

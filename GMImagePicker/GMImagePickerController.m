@@ -167,7 +167,7 @@
 
 - (void)updateToolbar
 {
-    if (!self.allowsMultipleSelection) {
+    if (!self.allowsMultipleSelection && !self.showCameraButton) {
         return;
     }
 
@@ -180,7 +180,7 @@
         [[viewController.toolbarItems objectAtIndex:index] setTitleTextAttributes:[self toolbarTitleTextAttributes] forState:UIControlStateNormal];
         [[viewController.toolbarItems objectAtIndex:index] setTitleTextAttributes:[self toolbarTitleTextAttributes] forState:UIControlStateDisabled];
         [[viewController.toolbarItems objectAtIndex:index] setTitle:[self toolbarTitle]];
-        [viewController.navigationController setToolbarHidden:(self.selectedAssets.count == 0 && self.showCameraButton != YES) animated:YES];
+        [viewController.navigationController setToolbarHidden:(self.selectedAssets.count == 0 && !self.showCameraButton) animated:YES];
     }
 }
 
