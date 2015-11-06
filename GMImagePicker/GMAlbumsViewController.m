@@ -115,6 +115,11 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     return self.picker.pickerStatusBarStyle;
 }
 
+- (void)selectAllAlbumsCell {
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    [self tableView:self.tableView didSelectRowAtIndexPath:indexPath];
+}
+
 -(void)updateFetchResults
 {
     //What I do here is fetch both the albums list and the assets of each album.

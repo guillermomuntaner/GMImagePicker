@@ -49,6 +49,7 @@
     picker.allowsMultipleSelection = YES;
     
 //    picker.showCameraButton = YES;
+//    picker.autoSelectCameraImages = YES;
     
     picker.modalPresentationStyle = UIModalPresentationPopover;
 

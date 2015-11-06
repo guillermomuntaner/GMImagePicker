@@ -106,6 +106,12 @@ static CGSize const kPopoverContentSize = {480, 720};
 @property (nonatomic, assign) BOOL showCameraButton;
 
 /**
+ * True to auto select the image(s) taken with the camera if showCameraButton = YES. In the case of allowsMultipleSelection = YES,
+ * this will trigger the selection handler too.
+ */
+@property (nonatomic, assign) BOOL autoSelectCameraImages;
+
+/**
  *  Grid customizations:
  *
  *  - colsInPortrait: Number of columns in portrait (3 by default)
