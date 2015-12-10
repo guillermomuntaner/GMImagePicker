@@ -11,7 +11,7 @@
 #import "GMAlbumsViewController.h"
 @import Photos;
 
-@interface GMImagePickerController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface GMImagePickerController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
 
 @end
 
@@ -28,6 +28,7 @@
         _displayAlbumsNumberOfAssets = YES;
         _autoDisableDoneButton = YES;
         _allowsMultipleSelection = YES;
+        _confirmSingleSelection = NO;
         _showCameraButton = NO;
         
         // Grid configuration:
@@ -127,6 +128,17 @@
 }
 
 
+#pragma mark - UIAlertViewDelegate
+
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        // Only if OK was pressed do we want to completge the selection
+        [self finishPickingAssets:self];
+    }
+}
+
+
 #pragma mark - Select / Deselect Asset
 
 - (void)selectAsset:(PHAsset *)asset
@@ -135,7 +147,16 @@
     [self updateDoneButton];
     
     if (!self.allowsMultipleSelection) {
-        [self finishPickingAssets:self];
+        if (self.confirmSingleSelection) {
+            
+            [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.confirm.title",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Are You Sure?")]
+                                        message:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.confirm.message",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Do you want to select the image you tapped on?")]
+                                       delegate:self
+                              cancelButtonTitle:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.action.no",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"No")]
+                              otherButtonTitles:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.action.yes",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Yes")], nil] show];
+        } else {
+            [self finishPickingAssets:self];
+        }
     } else if (self.displaySelectionInfoToolbar || self.showCameraButton) {
         [self updateToolbar];
     }
@@ -227,7 +248,7 @@
     NSInteger nVideos = [self.selectedAssets filteredArrayUsingPredicate:videoPredicate].count;
     
     if (nImages > 0 && nVideos > 0) {
-        return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.selection.multiple-items",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"%@ Items Selected" ), @(nImages+nVideos)];
+        return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.selection.multiple-items",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"%@ Items Selected" ), @(nImages + nVideos)];
     } else if (nImages > 1) {
         return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.selection.multiple-photos",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"%@ Photos Selected"), @(nImages)];
     } else if (nImages == 1) {

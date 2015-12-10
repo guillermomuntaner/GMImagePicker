@@ -498,6 +498,7 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     });
 }
 
+
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView

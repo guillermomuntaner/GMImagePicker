@@ -100,6 +100,11 @@ static CGSize const kPopoverContentSize = {480, 720};
 @property (nonatomic, assign) BOOL allowsMultipleSelection;
 
 /**
+ * In the case where allowsMultipleSelection = NO, set this to YES to have the user confirm their selection. Default is NO.
+ */
+@property (nonatomic, assign) BOOL confirmSingleSelection;
+
+/**
  *  True to always show the toolbar, with a camera button allowing new photos to be taken. False to auto show/hide the
  *  toolbar, and have no camera button. Default is false. If true, this renders displaySelectionInfoToolbar a no-op.
  */
