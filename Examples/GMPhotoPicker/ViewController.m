@@ -37,16 +37,45 @@
     GMImagePickerController *picker = [[GMImagePickerController alloc] init];
     picker.delegate = self;
     picker.title = @"Custom title";
-    picker.customNavigationBarPrompt = @"Custom helper message!";
+    
+    picker.customDoneButtonTitle = @"Finished";
+    picker.customCancelButtonTitle = @"Nope";
+    picker.customNavigationBarPrompt = @"Take a new photo or select an existing one!";
+    
     picker.colsInPortrait = 3;
     picker.colsInLandscape = 5;
     picker.minimumInteritemSpacing = 2.0;
+    
+    picker.allowsMultipleSelection = NO;
+//    picker.confirmSingleSelection = YES;
+    
+//    picker.showCameraButton = YES;
+//    picker.autoSelectCameraImages = YES;
+    
     picker.modalPresentationStyle = UIModalPresentationPopover;
+
+//    picker.mediaTypes = @[@(PHAssetMediaTypeImage)];
+
+//    picker.pickerBackgroundColor = [UIColor blackColor];
+//    picker.pickerTextColor = [UIColor whiteColor];
+//    picker.toolbarBarTintColor = [UIColor darkGrayColor];
+//    picker.toolbarTextColor = [UIColor whiteColor];
+//    picker.toolbarTintColor = [UIColor redColor];
+//    picker.navigationBarBackgroundColor = [UIColor blackColor];
+//    picker.navigationBarTextColor = [UIColor whiteColor];
+//    picker.navigationBarTintColor = [UIColor redColor];
+//    picker.pickerFontName = @"Verdana";
+//    picker.pickerBoldFontName = @"Verdana-Bold";
+//    picker.pickerFontNormalSize = 14.f;
+//    picker.pickerFontHeaderSize = 17.0f;
+//    picker.pickerStatusBarStyle = UIStatusBarStyleLightContent;
+//    picker.useCustomFontForNavigationBar = YES;
     
     UIPopoverPresentationController *popPC = picker.popoverPresentationController;
     popPC.permittedArrowDirections = UIPopoverArrowDirectionAny;
     popPC.sourceView = _gmImagePickerButton;
     popPC.sourceRect = _gmImagePickerButton.bounds;
+//    popPC.backgroundColor = [UIColor blackColor];
     
     [self showViewController:picker sender:nil];
 }

@@ -44,8 +44,7 @@ static UIColor *disabledColor;
 
 - (id)initWithFrame:(CGRect)frame
 {
-    if (self = [super initWithFrame:frame])
-    {
+    if (self = [super initWithFrame:frame]) {
         self.opaque                 = NO;
         self.enabled                = YES;
         
@@ -123,11 +122,14 @@ static UIColor *disabledColor;
         _selectedButton.userInteractionEnabled = NO;
         [self addSubview:_selectedButton];
     }
-    
+
+    // Note: the views above are created in case this is toggled per cell, on the fly, etc.!
+    self.shouldShowSelection = YES;
+
     return self;
 }
 
-//Required to resize the CAGradientLayer because it does not support auto resizing.
+// Required to resize the CAGradientLayer because it does not support auto resizing.
 - (void)layoutSubviews {
     [super layoutSubviews];
     _gradient.frame = _gradientView.bounds;
@@ -137,15 +139,12 @@ static UIColor *disabledColor;
 {
     self.asset  = asset;
     
-    if (self.asset.mediaType == PHAssetMediaTypeVideo)
-    {
+    if (self.asset.mediaType == PHAssetMediaTypeVideo) {
         _videoIcon.hidden = NO;
         _videoDuration.hidden = NO;
         _gradientView.hidden = NO;
         _videoDuration.text = [self getDurationWithFormat:self.asset.duration];
-    }
-    else
-    {
+    } else {
         _videoIcon.hidden = YES;
         _videoDuration.hidden = YES;
         _gradientView.hidden = YES;
@@ -156,6 +155,11 @@ static UIColor *disabledColor;
 - (void)setSelected:(BOOL)selected
 {
     [super setSelected:selected];
+    
+    if (!self.shouldShowSelection) {
+        return;
+    }
+    
     _coverView.hidden = !selected;
     _selectedButton.selected = selected;
 }
