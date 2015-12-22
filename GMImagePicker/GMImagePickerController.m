@@ -28,7 +28,6 @@
         _autoDisableDoneButton = YES;
         _allowsMultipleSelection = YES;
         _confirmSingleSelection = NO;
-        _confirmSingleSelectionPrompt = nil;
         _showCameraButton = NO;
         
         // Grid configuration:
@@ -148,12 +147,7 @@
     
     if (!self.allowsMultipleSelection) {
         if (self.confirmSingleSelection) {
-            NSString *message;
-            if (self.confirmSingleSelectionPrompt != nil) {
-                message = self.confirmSingleSelectionPrompt;
-            } else {
-                message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.confirm.message",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Do you want to select the image you tapped on?")];
-            }
+            NSString *message = self.confirmSingleSelectionPrompt ? self.confirmSingleSelectionPrompt : [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.confirm.message",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Do you want to select the image you tapped on?")];
             
             [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.confirm.title",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Are You Sure?")]
                                         message:message
