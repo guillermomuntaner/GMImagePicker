@@ -105,6 +105,11 @@ static CGSize const kPopoverContentSize = {480, 720};
 @property (nonatomic, assign) BOOL confirmSingleSelection;
 
 /**
+ * If set, it displays this string (if confirmSingleSelection = YES) instead of the localised default.
+ */
+@property (nonatomic, assign) NSString *confirmSingleSelectionPrompt;
+
+/**
  *  True to always show the toolbar, with a camera button allowing new photos to be taken. False to auto show/hide the
  *  toolbar, and have no camera button. Default is false. If true, this renders displaySelectionInfoToolbar a no-op.
  */

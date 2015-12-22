@@ -46,8 +46,9 @@
     picker.colsInLandscape = 5;
     picker.minimumInteritemSpacing = 2.0;
     
-    picker.allowsMultipleSelection = NO;
+//    picker.allowsMultipleSelection = NO;
 //    picker.confirmSingleSelection = YES;
+//    picker.confirmSingleSelectionPrompt = @"Do you want to select the image you have chosen?";
     
 //    picker.showCameraButton = YES;
 //    picker.autoSelectCameraImages = YES;
