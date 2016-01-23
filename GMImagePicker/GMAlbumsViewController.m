@@ -313,9 +313,9 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         }
     } else {
         [cell setVideoLayout:NO];
-        cell.imageView3.image = [UIImage imageNamed:@"EmptyFolder"];
-        cell.imageView2.image = [UIImage imageNamed:@"EmptyFolder"];
-        cell.imageView1.image = [UIImage imageNamed:@"EmptyFolder"];
+        cell.imageView3.image = [UIImage imageNamed:@"GMEmptyFolder"];
+        cell.imageView2.image = [UIImage imageNamed:@"GMEmptyFolder"];
+        cell.imageView1.image = [UIImage imageNamed:@"GMEmptyFolder"];
     }
     
     return cell;
