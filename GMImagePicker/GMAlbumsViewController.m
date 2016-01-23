@@ -44,7 +44,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
 {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor clearColor];
+    self.view.backgroundColor = [self.picker pickerBackgroundColor];
 
     // Navigation bar customization
     if (self.picker.customNavigationBarPrompt) {
