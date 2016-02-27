@@ -145,7 +145,7 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     [self.collectionView setNeedsLayout];
     [self.collectionView layoutIfNeeded];
     
-    [self.collectionView setContentOffset:CGPointMake(0, self.view.frame.size.height)];
+    [self.collectionView setContentOffset:CGPointMake(0, [[self.collectionView collectionViewLayout] collectionViewContentSize].height)];
 }
 
 - (void)viewDidAppear:(BOOL)animated
