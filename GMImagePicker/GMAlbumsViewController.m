@@ -104,6 +104,11 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     
     // Register for changes
     [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
+    
+    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
+    {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    }
 }
 
 - (void)dealloc
