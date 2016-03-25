@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B0493B8F1CA51FE50054FD57 /* GMImagePicker.strings in Resources */ = {isa = PBXBuildFile; fileRef = B0493B8D1CA51FE50054FD57 /* GMImagePicker.strings */; };
 		B31E08651A0C45BC000D7841 /* GMImagePicker.strings in Resources */ = {isa = PBXBuildFile; fileRef = B31E084C1A0C45BC000D7841 /* GMImagePicker.strings */; };
 		B31E08661A0C45BC000D7841 /* GMImagePicker.strings in Resources */ = {isa = PBXBuildFile; fileRef = B31E084F1A0C45BC000D7841 /* GMImagePicker.strings */; };
 		B31E08671A0C45BC000D7841 /* GMImagePicker.strings in Resources */ = {isa = PBXBuildFile; fileRef = B31E08521A0C45BC000D7841 /* GMImagePicker.strings */; };
@@ -47,6 +48,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B0493B8E1CA51FE50054FD57 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = GMImagePicker.strings; sourceTree = "<group>"; };
 		B31E084D1A0C45BC000D7841 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = GMImagePicker.strings; sourceTree = "<group>"; };
 		B31E08501A0C45BC000D7841 /* ca */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ca; path = GMImagePicker.strings; sourceTree = "<group>"; };
 		B31E08531A0C45BC000D7841 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = GMImagePicker.strings; sourceTree = "<group>"; };
@@ -106,6 +108,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B0493B8C1CA51FE50054FD57 /* nl.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				B0493B8D1CA51FE50054FD57 /* GMImagePicker.strings */,
+			);
+			path = nl.lproj;
+			sourceTree = "<group>";
+		};
 		B31E084B1A0C45BC000D7841 /* Base.lproj */ = {
 			isa = PBXGroup;
 			children = (
@@ -234,6 +244,7 @@
 		B3A2F8A319D18A3700A59BE4 /* GMImagePicker */ = {
 			isa = PBXGroup;
 			children = (
+				B0493B8C1CA51FE50054FD57 /* nl.lproj */,
 				B31E084B1A0C45BC000D7841 /* Base.lproj */,
 				B31E084E1A0C45BC000D7841 /* ca.lproj */,
 				B31E08511A0C45BC000D7841 /* de.lproj */,
@@ -333,6 +344,7 @@
 				fr,
 				it,
 				pt,
+				nl,
 			);
 			mainGroup = B37D576B19CA3B39007F64BD;
 			productRefGroup = B37D577519CA3B3A007F64BD /* Products */;
@@ -362,6 +374,7 @@
 				B37D579F19CA44AF007F64BD /* Main.storyboard in Resources */,
 				B31E08661A0C45BC000D7841 /* GMImagePicker.strings in Resources */,
 				B31E08691A0C45BC000D7841 /* GMImagePicker.strings in Resources */,
+				B0493B8F1CA51FE50054FD57 /* GMImagePicker.strings in Resources */,
 				B37D578519CA3B3A007F64BD /* Images.xcassets in Resources */,
 				B31E08651A0C45BC000D7841 /* GMImagePicker.strings in Resources */,
 				B31E08671A0C45BC000D7841 /* GMImagePicker.strings in Resources */,
@@ -414,6 +427,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		B0493B8D1CA51FE50054FD57 /* GMImagePicker.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B0493B8E1CA51FE50054FD57 /* nl */,
+			);
+			name = GMImagePicker.strings;
+			sourceTree = "<group>";
+		};
 		B31E084C1A0C45BC000D7841 /* GMImagePicker.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
