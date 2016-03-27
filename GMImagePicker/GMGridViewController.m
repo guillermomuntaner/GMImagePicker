@@ -200,7 +200,7 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 - (void)setupViews
 {
     self.collectionView.backgroundColor = [UIColor clearColor];
-    self.view.backgroundColor = [UIColor clearColor];
+    self.view.backgroundColor = [self.picker pickerBackgroundColor];
 }
 
 - (void)setupButtons
