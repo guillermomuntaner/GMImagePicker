@@ -271,7 +271,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         
         //Compute the thumbnail pixel size:
         CGSize tableCellThumbnailSize1 = CGSizeMake(kAlbumThumbnailSize1.width*scale, kAlbumThumbnailSize1.height*scale);
-        PHAsset *asset = assetsFetchResult[0];
+        PHAsset *asset = assetsFetchResult[[assetsFetchResult count] - 1];
         [cell setVideoLayout:(asset.mediaType==PHAssetMediaTypeVideo)];
         [self.imageManager requestImageForAsset:asset
                                      targetSize:tableCellThumbnailSize1
