@@ -11,8 +11,11 @@
 #import "GMAlbumsViewController.h"
 #import "GMGridViewCell.h"
 
-@import Photos;
-
+#if __has_feature(modules)
+    @import Photos;
+#else
+    #import <Photos/Photos.h>
+#endif
 
 //Helper methods
 @implementation NSIndexSet (Convenience)
