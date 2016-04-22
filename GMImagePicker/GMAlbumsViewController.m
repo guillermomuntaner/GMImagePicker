@@ -288,7 +288,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         if ([assetsFetchResult count] > 1) {
             //Compute the thumbnail pixel size:
             CGSize tableCellThumbnailSize2 = CGSizeMake(kAlbumThumbnailSize2.width*scale, kAlbumThumbnailSize2.height*scale);
-            PHAsset *asset = assetsFetchResult[1];
+            PHAsset *asset = assetsFetchResult[[assetsFetchResult count] - 2];
             [self.imageManager requestImageForAsset:asset
                                          targetSize:tableCellThumbnailSize2
                                         contentMode:PHImageContentModeAspectFill
@@ -304,7 +304,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         
         if ([assetsFetchResult count] > 2) {
             CGSize tableCellThumbnailSize3 = CGSizeMake(kAlbumThumbnailSize3.width*scale, kAlbumThumbnailSize3.height*scale);
-            PHAsset *asset = assetsFetchResult[2];
+            PHAsset *asset = assetsFetchResult[[assetsFetchResult count] - 3];
             [self.imageManager requestImageForAsset:asset
                                          targetSize:tableCellThumbnailSize3
                                         contentMode:PHImageContentModeAspectFill
