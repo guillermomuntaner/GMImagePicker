@@ -128,11 +128,6 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     self.imageManager = [[PHCachingImageManager alloc] init];
     [self resetCachedAssets];
     [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
-    
-    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
-    {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
