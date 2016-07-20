@@ -84,11 +84,14 @@
     self.view.backgroundColor = _pickerBackgroundColor;
 
     _navigationController.toolbar.translucent = YES;
+    _navigationController.toolbar.backgroundColor = _toolbarBackgroundColor;
     _navigationController.toolbar.barTintColor = _toolbarBarTintColor;
     _navigationController.toolbar.tintColor = _toolbarTintColor;
     
     _navigationController.navigationBar.backgroundColor = _navigationBarBackgroundColor;
+    _navigationController.navigationBar.barTintColor = _navigationBarBarTintColor;
     _navigationController.navigationBar.tintColor = _navigationBarTintColor;
+   
     NSDictionary *attributes;
     if (_useCustomFontForNavigationBar) {
         attributes = @{NSForegroundColorAttributeName : _navigationBarTextColor,
