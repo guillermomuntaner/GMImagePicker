@@ -60,12 +60,10 @@
         _pickerBoldFontName = @"HelveticaNeue-Bold";
         _pickerFontNormalSize = 14.0f;
         _pickerFontHeaderSize = 17.0f;
-        
-        _navigationBarBackgroundColor = [UIColor whiteColor];
+       
         _navigationBarTextColor = [UIColor darkTextColor];
         _navigationBarTintColor = [UIColor darkTextColor];
         
-        _toolbarBarTintColor = [UIColor whiteColor];
         _toolbarTextColor = [UIColor darkTextColor];
         _toolbarTintColor = [UIColor darkTextColor];
         
