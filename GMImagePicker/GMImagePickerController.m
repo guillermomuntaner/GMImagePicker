@@ -60,12 +60,10 @@
         _pickerBoldFontName = @"HelveticaNeue-Bold";
         _pickerFontNormalSize = 14.0f;
         _pickerFontHeaderSize = 17.0f;
-        
-        _navigationBarBackgroundColor = [UIColor whiteColor];
+       
         _navigationBarTextColor = [UIColor darkTextColor];
         _navigationBarTintColor = [UIColor darkTextColor];
         
-        _toolbarBarTintColor = [UIColor whiteColor];
         _toolbarTextColor = [UIColor darkTextColor];
         _toolbarTintColor = [UIColor darkTextColor];
         
@@ -84,12 +82,14 @@
     self.view.backgroundColor = _pickerBackgroundColor;
 
     _navigationController.toolbar.translucent = YES;
+    _navigationController.toolbar.backgroundColor = _toolbarBackgroundColor;
     _navigationController.toolbar.barTintColor = _toolbarBarTintColor;
     _navigationController.toolbar.tintColor = _toolbarTintColor;
-    [(UIView*)[_navigationController.toolbar.subviews objectAtIndex:0] setAlpha:0.75f];  // URGH - I know!
     
     _navigationController.navigationBar.backgroundColor = _navigationBarBackgroundColor;
+    _navigationController.navigationBar.barTintColor = _navigationBarBarTintColor;
     _navigationController.navigationBar.tintColor = _navigationBarTintColor;
+   
     NSDictionary *attributes;
     if (_useCustomFontForNavigationBar) {
         attributes = @{NSForegroundColorAttributeName : _navigationBarTextColor,
@@ -116,8 +116,6 @@
     _navigationController.delegate = self;
     
     _navigationController.navigationBar.translucent = YES;
-    [_navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-    _navigationController.navigationBar.shadowImage = [UIImage new];
     
     [_navigationController willMoveToParentViewController:self];
     [_navigationController.view setFrame:self.view.frame];
