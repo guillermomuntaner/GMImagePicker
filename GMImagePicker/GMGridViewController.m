@@ -100,6 +100,11 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     {
         //Compute the thumbnail pixel size:
         CGFloat scale = [UIScreen mainScreen].scale;
+        //Native scale (3) on iPhone 6+ makes laggy scrolling, 2 is recommended
+        if (scale > 2.0)
+        {
+            scale = 2.0;
+        }
         //NSLog(@"This is @%fx scale device", scale);
         AssetGridThumbnailSize = CGSizeMake(layout.itemSize.width * scale, layout.itemSize.height * scale);
         
@@ -172,6 +177,11 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     
     //Update the AssetGridThumbnailSize:
     CGFloat scale = [UIScreen mainScreen].scale;
+    //Native scale (3) on iPhone 6+ makes laggy scrolling, 2 is recommended
+    if (scale > 2.0)
+    {
+        scale = 2.0;
+    }
     AssetGridThumbnailSize = CGSizeMake(layout.itemSize.width * scale, layout.itemSize.height * scale);
     
     [self resetCachedAssets];
