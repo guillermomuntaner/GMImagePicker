@@ -96,9 +96,10 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     
     // Fetch PHAssetCollections:
     PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
+    PHFetchResult *syncAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumSyncedAlbum options:nil];
     PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
-    self.collectionsFetchResults = @[topLevelUserCollections, smartAlbums];
-    self.collectionsLocalizedTitles = @[NSLocalizedStringFromTableInBundle(@"picker.table.user-albums-header",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Albums"), NSLocalizedStringFromTableInBundle(@"picker.table.smart-albums-header",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Smart Albums")];
+    self.collectionsFetchResults = @[topLevelUserCollections, syncAlbums, smartAlbums];
+    self.collectionsLocalizedTitles = @[NSLocalizedStringFromTableInBundle(@"picker.table.user-albums-header",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Albums"), NSLocalizedStringFromTableInBundle(@"picker.table.synced-albums-header",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Synced Albums"), NSLocalizedStringFromTableInBundle(@"picker.table.smart-albums-header",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Smart Albums")];
     
     [self updateFetchResults];
     
@@ -131,7 +132,8 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     
     //Fetch PHAssetCollections:
     PHFetchResult *topLevelUserCollections = [self.collectionsFetchResults objectAtIndex:0];
-    PHFetchResult *smartAlbums = [self.collectionsFetchResults objectAtIndex:1];
+    PHFetchResult *syncedAlbums = [self.collectionsFetchResults objectAtIndex:1];
+    PHFetchResult *smartAlbums = [self.collectionsFetchResults objectAtIndex:2];
     
     //All album: Sorted by descending creation date.
     NSMutableArray *allFetchResultArray = [[NSMutableArray alloc] init];
@@ -163,8 +165,26 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             [userFetchResultLabel addObject:collection.localizedTitle];
         }
     }
+
+    //Synced albums:
+    NSMutableArray *syncedFetchResultArray = [[NSMutableArray alloc] init];
+    NSMutableArray *syncedFetchResultLabel = [[NSMutableArray alloc] init];
+    for(PHCollection *collection in syncedAlbums)
+    {
+        if ([collection isKindOfClass:[PHAssetCollection class]])
+        {
+            PHFetchOptions *options = [[PHFetchOptions alloc] init];
+            options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
+            PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
+            
+            //Albums collections are allways PHAssetCollectionType=1 & PHAssetCollectionSubtype=2
+            
+            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
+            [syncedFetchResultArray addObject:assetsFetchResult];
+            [syncedFetchResultLabel addObject:collection.localizedTitle];
+        }
+    }
     
-                                  
     //Smart albums: Sorted by descending creation date.
     NSMutableArray *smartFetchResultArray = [[NSMutableArray alloc] init];
     NSMutableArray *smartFetchResultLabel = [[NSMutableArray alloc] init];
@@ -191,8 +211,8 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         }
     }
     
-    self.collectionsFetchResultsAssets= @[allFetchResultArray,userFetchResultArray,smartFetchResultArray];
-    self.collectionsFetchResultsTitles= @[allFetchResultLabel,userFetchResultLabel,smartFetchResultLabel];
+    self.collectionsFetchResultsAssets= @[allFetchResultArray,userFetchResultArray,syncedFetchResultArray,smartFetchResultArray];
+    self.collectionsFetchResultsTitles= @[allFetchResultLabel,userFetchResultLabel,syncedFetchResultLabel,smartFetchResultLabel];
 }
 
 
