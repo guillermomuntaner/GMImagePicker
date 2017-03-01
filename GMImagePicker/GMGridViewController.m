@@ -373,7 +373,7 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     
     GMGridViewCell *cell = (GMGridViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     
-    if (!cell.isEnabled) {
+    if (!cell.isEnabled || self.picker.selectedAssets.count >= self.picker.maxNumberForSelection) {
         return NO;
     } else if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldSelectAsset:)]) {
         return [self.picker.delegate assetsPickerController:self.picker shouldSelectAsset:asset];
@@ -383,13 +383,16 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    PHAsset *asset = self.assetsFetchResults[indexPath.item];
+{ 
+    if (self.picker.selectedAssets.count < self.picker.maxNumberForSelection) {
     
-    [self.picker selectAsset:asset];
-    
-    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didSelectAsset:)]) {
-        [self.picker.delegate assetsPickerController:self.picker didSelectAsset:asset];
+        PHAsset *asset = self.assetsFetchResults[indexPath.item];
+        
+        [self.picker selectAsset:asset];
+        
+        if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didSelectAsset:)]) {
+            [self.picker.delegate assetsPickerController:self.picker didSelectAsset:asset];
+        }
     }
 }
 

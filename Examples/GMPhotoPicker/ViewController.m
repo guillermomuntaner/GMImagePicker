@@ -46,6 +46,8 @@
     picker.colsInLandscape = 5;
     picker.minimumInteritemSpacing = 2.0;
     
+    picker.maxNumberForSelection = 3;
+    
 //    picker.allowsMultipleSelection = NO;
 //    picker.confirmSingleSelection = YES;
 //    picker.confirmSingleSelectionPrompt = @"Do you want to select the image you have chosen?";
