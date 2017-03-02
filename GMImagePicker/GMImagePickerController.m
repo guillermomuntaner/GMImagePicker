@@ -86,7 +86,7 @@
     _navigationController.toolbar.translucent = YES;
     _navigationController.toolbar.barTintColor = _toolbarBarTintColor;
     _navigationController.toolbar.tintColor = _toolbarTintColor;
-    [(UIView*)[_navigationController.toolbar.subviews objectAtIndex:0] setAlpha:0.75f];  // URGH - I know!
+//    [(UIView*)[_navigationController.toolbar.subviews objectAtIndex:0] setAlpha:0.75f];  // URGH - I know!
     
     _navigationController.navigationBar.backgroundColor = _navigationBarBackgroundColor;
     _navigationController.navigationBar.tintColor = _navigationBarTintColor;
@@ -114,11 +114,8 @@
     GMAlbumsViewController *albumsViewController = [[GMAlbumsViewController alloc] init];
     _navigationController = [[UINavigationController alloc] initWithRootViewController:albumsViewController];
     _navigationController.delegate = self;
-    
-    _navigationController.navigationBar.translucent = YES;
-    [_navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-    _navigationController.navigationBar.shadowImage = [UIImage new];
-    
+    _navigationController.navigationBar.translucent = NO;
+
     [_navigationController willMoveToParentViewController:self];
     [_navigationController.view setFrame:self.view.frame];
     [self.view addSubview:_navigationController.view];
@@ -249,10 +246,8 @@
     
     if (nImages > 0 && nVideos > 0) {
         return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.selection.multiple-items",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"%@ Items Selected" ), @(nImages + nVideos)];
-    } else if (nImages > 1) {
-        return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.selection.multiple-photos",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"%@ Photos Selected"), @(nImages)];
-    } else if (nImages == 1) {
-        return NSLocalizedStringFromTableInBundle(@"picker.selection.single-photo",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"1 Photo Selected" );
+    } else if (nImages >= 1) {
+        return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.selection.multiple-photos",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"%@ %@ of  Photos Selected"), @(nImages), self.maxNumberForSelection];
     } else if (nVideos > 1) {
         return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.selection.multiple-videos",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"%@ Videos Selected"), @(nVideos)];
     } else if (nVideos == 1) {

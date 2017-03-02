@@ -46,6 +46,8 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     
     self.view.backgroundColor = [self.picker pickerBackgroundColor];
 
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:NULL action:NULL];
+
     // Navigation bar customization
     if (self.picker.customNavigationBarPrompt) {
         self.navigationItem.prompt = self.picker.customNavigationBarPrompt;
