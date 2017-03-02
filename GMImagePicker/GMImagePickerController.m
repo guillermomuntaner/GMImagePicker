@@ -114,11 +114,8 @@
     GMAlbumsViewController *albumsViewController = [[GMAlbumsViewController alloc] init];
     _navigationController = [[UINavigationController alloc] initWithRootViewController:albumsViewController];
     _navigationController.delegate = self;
-    
-    _navigationController.navigationBar.translucent = YES;
-    [_navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-    _navigationController.navigationBar.shadowImage = [UIImage new];
-    
+    _navigationController.navigationBar.translucent = NO;
+
     [_navigationController willMoveToParentViewController:self];
     [_navigationController.view setFrame:self.view.frame];
     [self.view addSubview:_navigationController.view];
