@@ -35,7 +35,7 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "8.0"
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.source       = { :git => "https://github.com/guillermomuntaner/GMImagePicker.git", :tag => “0.0.3” }
+  s.source       = { :git => "https://github.com/hudinwal/GMImagePicker.git", :tag => "v#{s.version.to_s}" }
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.source_files  = "GMImagePicker", "GMImagePicker/*.{h,m}"
