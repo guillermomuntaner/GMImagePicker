@@ -8,14 +8,14 @@
 
 
 #import "GMImagePickerController.h"
-@import UIKit;
-@import Photos;
+#include <UIKit/UIKit.h>
+#include <Photos/Photos.h>
 
 
 @interface GMGridViewController : UICollectionViewController
 
-@property (strong) PHFetchResult *assetsFetchResults;
+@property (strong,nonatomic) PHFetchResult *assetsFetchResults;
 
 -(id)initWithPicker:(GMImagePickerController *)picker;
-    
+
 @end
