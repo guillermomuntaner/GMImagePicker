@@ -59,10 +59,12 @@
 
 //    picker.pickerBackgroundColor = [UIColor blackColor];
 //    picker.pickerTextColor = [UIColor whiteColor];
-//    picker.toolbarBarTintColor = [UIColor darkGrayColor];
+//    picker.toolbarBackgroundColor = [UIColor darkGrayColor];
+//    picker.toolbarBarTintColor = [UIColor blackColor];
 //    picker.toolbarTextColor = [UIColor whiteColor];
 //    picker.toolbarTintColor = [UIColor redColor];
-//    picker.navigationBarBackgroundColor = [UIColor blackColor];
+//    picker.navigationBarBackgroundColor = [UIColor darkGrayColor];
+//    picker.navigationBarBarTintColor = [UIColor blackColor];
 //    picker.navigationBarTextColor = [UIColor whiteColor];
 //    picker.navigationBarTintColor = [UIColor redColor];
 //    picker.pickerFontName = @"Verdana";
