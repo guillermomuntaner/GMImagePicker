@@ -38,6 +38,11 @@ If you don't know yet what CocoaPods is, you should ASAP. It is the standard dep
 ###### Manually 
 Download and import GMImagePicker folder into your project.
 
+###### Using Carthage
+```
+github "guillermomuntaner/GMImagePicker"
+```
+
 #### Import header file
 
 ```` objective-c
