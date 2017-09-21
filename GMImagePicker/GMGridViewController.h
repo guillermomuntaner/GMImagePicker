@@ -6,11 +6,15 @@
 //  Copyright (c) 2014 Guillermo Muntaner Perelló. All rights reserved.
 //
 
+#if __has_feature(modules)
+    @import UIKit;
+    @import Photos;
+#else
+    #import <UIKit/UIKit.h>
+    #import <Photos/Photos.h>
+#endif
 
 #import "GMImagePickerController.h"
-@import UIKit;
-@import Photos;
-
 
 @interface GMGridViewController : UICollectionViewController
 

@@ -6,10 +6,14 @@
 //  Copyright (c) 2014 Guillermo Muntaner Perelló. All rights reserved.
 //
 
+#if __has_feature(modules)
+    @import Photos;
+#else
+    #import <Photos/Photos.h>
+#endif
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "GMImagePickerController.h"
 #import "GMAlbumsViewController.h"
-@import Photos;
 
 @interface GMImagePickerController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
 

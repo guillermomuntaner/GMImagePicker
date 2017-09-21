@@ -12,7 +12,11 @@
 #import "GMGridViewController.h"
 #import "GMAlbumsViewCell.h"
 
-@import Photos;
+#if __has_feature(modules)
+    @import Photos;
+#else
+    #import <Photos/Photos.h>
+#endif
 
 @interface GMAlbumsViewController() <PHPhotoLibraryChangeObserver>
 

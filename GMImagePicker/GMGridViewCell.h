@@ -6,9 +6,13 @@
 //  Copyright (c) 2014 Guillermo Muntaner Perelló. All rights reserved.
 //
 
-@import UIKit;
-@import Photos;
-
+#if __has_feature(modules)
+    @import UIKit;
+    @import Photos;
+#else
+    #import <UIKit/UIKit.h>
+    #import <Photos/Photos.h>
+#endif
 
 @interface GMGridViewCell : UICollectionViewCell
 
