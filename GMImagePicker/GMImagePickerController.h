@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Guillermo Muntaner Perelló. All rights reserved.
 //
 
-@import UIKit;
-@import Photos;
+#import <UIKit/UIKit.h>
+#import <Photos/Photos.h>
 
 
 //This is the default image picker size!
@@ -41,7 +41,7 @@ static CGSize const kPopoverContentSize = {480, 720};
 
 /**
  *  Determines which smart collections are displayed (int array of enum: PHAssetCollectionSubtypeSmartAlbum)
- *  The default smart collections are: 
+ *  The default smart collections are:
  *  - Favorites
  *  - RecentlyAdded
  *  - Videos
