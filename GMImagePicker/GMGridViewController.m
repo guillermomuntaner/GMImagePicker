@@ -141,6 +141,11 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     
     [self setupButtons];
     [self setupToolbar];
+    
+    [self.collectionView setNeedsLayout];
+    [self.collectionView layoutIfNeeded];
+    
+    [self.collectionView setContentOffset:CGPointMake(0, [[self.collectionView collectionViewLayout] collectionViewContentSize].height)];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -495,7 +500,11 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
                     if ([changedIndexes count]) {
                         [collectionView reloadItemsAtIndexPaths:[changedIndexes aapl_indexPathsFromIndexesWithSection:0]];
                     }
-                } completion:NULL];
+                } completion:^(BOOL finished) {
+                    NSIndexSet *insertedIndexes = [collectionChanges insertedIndexes];
+                    NSIndexPath *lastPath = [insertedIndexes aapl_indexPathsFromIndexesWithSection:0].lastObject;
+                    [self.collectionView scrollToItemAtIndexPath:lastPath atScrollPosition:UICollectionViewScrollPositionBottom animated:true];
+                }];
             }
             
             [self resetCachedAssets];

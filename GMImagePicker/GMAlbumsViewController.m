@@ -144,7 +144,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     {
         PHFetchOptions *options = [[PHFetchOptions alloc] init];
         options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
-        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
         PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithOptions:options];
         [allFetchResultArray addObject:assetsFetchResult];
         [allFetchResultLabel addObject:NSLocalizedStringFromTableInBundle(@"picker.table.all-photos-label",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"All photos")];
@@ -159,6 +159,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         {
             PHFetchOptions *options = [[PHFetchOptions alloc] init];
             options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
+            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
             PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
             
             //Albums collections are allways PHAssetCollectionType=1 & PHAssetCollectionSubtype=2
@@ -184,7 +185,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             {
                 PHFetchOptions *options = [[PHFetchOptions alloc] init];
                 options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
-                options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+                options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
                 
                 PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
                 if(assetsFetchResult.count>0)
@@ -270,7 +271,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         
         //Compute the thumbnail pixel size:
         CGSize tableCellThumbnailSize1 = CGSizeMake(kAlbumThumbnailSize1.width*scale, kAlbumThumbnailSize1.height*scale);
-        PHAsset *asset = assetsFetchResult[0];
+        PHAsset *asset = assetsFetchResult[[assetsFetchResult count] - 1];
         [cell setVideoLayout:(asset.mediaType==PHAssetMediaTypeVideo)];
         [self.imageManager requestImageForAsset:asset
                                      targetSize:tableCellThumbnailSize1
@@ -287,7 +288,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         if ([assetsFetchResult count] > 1) {
             //Compute the thumbnail pixel size:
             CGSize tableCellThumbnailSize2 = CGSizeMake(kAlbumThumbnailSize2.width*scale, kAlbumThumbnailSize2.height*scale);
-            PHAsset *asset = assetsFetchResult[1];
+            PHAsset *asset = assetsFetchResult[[assetsFetchResult count] - 2];
             [self.imageManager requestImageForAsset:asset
                                          targetSize:tableCellThumbnailSize2
                                         contentMode:PHImageContentModeAspectFill
@@ -303,7 +304,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         
         if ([assetsFetchResult count] > 2) {
             CGSize tableCellThumbnailSize3 = CGSizeMake(kAlbumThumbnailSize3.width*scale, kAlbumThumbnailSize3.height*scale);
-            PHAsset *asset = assetsFetchResult[2];
+            PHAsset *asset = assetsFetchResult[[assetsFetchResult count] - 3];
             [self.imageManager requestImageForAsset:asset
                                          targetSize:tableCellThumbnailSize3
                                         contentMode:PHImageContentModeAspectFill
