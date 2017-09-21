@@ -38,8 +38,8 @@ static UIColor *disabledColor;
 {
     [super awakeFromNib];
     
-    self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    self.contentView.translatesAutoresizingMaskIntoConstraints = YES;
+//    self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+//    self.contentView.translatesAutoresizingMaskIntoConstraints = YES;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -63,8 +63,8 @@ static UIColor *disabledColor;
             _imageView.contentMode = UIViewContentModeScaleAspectFill;
         }*/
         _imageView.clipsToBounds = YES;
-        _imageView.translatesAutoresizingMaskIntoConstraints = NO;
-        _imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+//        _imageView.translatesAutoresizingMaskIntoConstraints = NO;
+//        _imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [self addSubview:_imageView];
         
         
@@ -77,8 +77,8 @@ static UIColor *disabledColor;
         _gradient.frame = _gradientView.bounds;
         _gradient.colors = [NSArray arrayWithObjects:(id)[topGradient CGColor], (id)[botGradient CGColor], nil];
         [_gradientView.layer insertSublayer:_gradient atIndex:0];
-        _gradientView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-        _gradientView.translatesAutoresizingMaskIntoConstraints = NO;
+//        _gradientView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+//        _gradientView.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:_gradientView];
         _gradientView.hidden = YES;
         
@@ -86,8 +86,8 @@ static UIColor *disabledColor;
         _videoIcon.frame = CGRectMake(x_offset, self.bounds.size.height-titleHeight, self.bounds.size.width-2*x_offset, titleHeight);
         _videoIcon.contentMode = UIViewContentModeLeft;
         _videoIcon.image = [UIImage imageNamed:@"GMVideoIcon" inBundle:[NSBundle bundleForClass:GMGridViewCell.class] compatibleWithTraitCollection:nil];
-        _videoIcon.translatesAutoresizingMaskIntoConstraints = NO;
-        _videoIcon.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+//        _videoIcon.translatesAutoresizingMaskIntoConstraints = NO;
+//        _videoIcon.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
         [self addSubview:_videoIcon];
         _videoIcon.hidden = YES;
         
@@ -97,8 +97,8 @@ static UIColor *disabledColor;
         _videoDuration.textAlignment = NSTextAlignmentRight;
         _videoDuration.frame = CGRectMake(x_offset, self.bounds.size.height-titleHeight, self.bounds.size.width-2*x_offset, titleHeight);
         _videoDuration.contentMode = UIViewContentModeRight;
-        _videoDuration.translatesAutoresizingMaskIntoConstraints = NO;
-        _videoDuration.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+//        _videoDuration.translatesAutoresizingMaskIntoConstraints = NO;
+//        _videoDuration.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
         [self addSubview:_videoDuration];
         _videoDuration.hidden = YES;
         
@@ -115,8 +115,8 @@ static UIColor *disabledColor;
         _selectedButton.contentMode = UIViewContentModeTopRight;
         _selectedButton.adjustsImageWhenHighlighted = NO;
         [_selectedButton setImage:nil forState:UIControlStateNormal];
-        _selectedButton.translatesAutoresizingMaskIntoConstraints = NO;
-        _selectedButton.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+//        _selectedButton.translatesAutoresizingMaskIntoConstraints = NO;
+//        _selectedButton.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [_selectedButton setImage:[UIImage imageNamed:@"GMSelected" inBundle:[NSBundle bundleForClass:GMGridViewCell.class] compatibleWithTraitCollection:nil] forState:UIControlStateSelected];
         _selectedButton.hidden = NO;
         _selectedButton.userInteractionEnabled = NO;
