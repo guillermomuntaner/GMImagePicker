@@ -286,7 +286,7 @@
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
     picker.mediaTypes = @[(NSString *)kUTTypeImage];
-    picker.allowsEditing = NO;
+    picker.allowsEditing = self.allowsEditingCameraImages;
     picker.delegate = self;
     picker.modalPresentationStyle = UIModalPresentationPopover;
     
@@ -353,7 +353,7 @@
 
     NSString *mediaType = info[UIImagePickerControllerMediaType];
     if ([mediaType isEqualToString:(NSString *)kUTTypeImage]) {
-        UIImage *image = info[UIImagePickerControllerOriginalImage];
+        UIImage *image = info[UIImagePickerControllerEditedImage] ? : info[UIImagePickerControllerOriginalImage];
         UIImageWriteToSavedPhotosAlbum(image,
                                        self,
                                        @selector(image:finishedSavingWithError:contextInfo:),

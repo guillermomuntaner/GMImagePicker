@@ -122,6 +122,11 @@ static CGSize const kPopoverContentSize = {480, 720};
 @property (nonatomic, assign) BOOL autoSelectCameraImages;
 
 /**
+ * If set, the user is allowed to edit captured still images
+ */
+@property (nonatomic, assign) BOOL allowsEditingCameraImages;
+
+/**
  *  Grid customizations:
  *
  *  - colsInPortrait: Number of columns in portrait (3 by default)
