@@ -480,11 +480,6 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
                     NSIndexSet *insertedIndexes = [collectionChanges insertedIndexes];
                     if ([insertedIndexes count]) {
                         [collectionView insertItemsAtIndexPaths:[insertedIndexes aapl_indexPathsFromIndexesWithSection:0]];
-                        if (self.picker.showCameraButton && self.picker.autoSelectCameraImages) {
-                            for (NSIndexPath *path in [insertedIndexes aapl_indexPathsFromIndexesWithSection:0]) {
-                                [self collectionView:collectionView didSelectItemAtIndexPath:path];
-                            }
-                        }
                     }
                     NSIndexSet *changedIndexes = [collectionChanges changedIndexes];
                     if ([changedIndexes count]) {

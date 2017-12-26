@@ -412,11 +412,26 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             self.collectionsFetchResults = updatedCollectionsFetchResults;
         }
         
+        // Auto select last taken pictures?
+        if (self.picker.showCameraButton && self.picker.autoSelectCameraImages) {
+            PHFetchResult* allAlbumsFetchResults = _collectionsFetchResultsAssets[0][0];
+            PHFetchResultChangeDetails *collectionChanges = [changeInstance changeDetailsForFetchResult:allAlbumsFetchResults];
+            if (collectionChanges) {
+                
+                // get the new fetch result
+                allAlbumsFetchResults = [collectionChanges fetchResultAfterChanges];
+                NSIndexSet *insertedIndexes = [collectionChanges insertedIndexes];
+                [insertedIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+                    PHAsset *asset = allAlbumsFetchResults[idx];
+                    [self.picker selectAsset:asset];
+                }];
+            }
+        }
+        
         // However, we want to update if photos are added, so the counts of items & thumbnails are updated too.
         // Maybe some checks could be done here , but for now is OKey.
         [self updateFetchResults];
         [self.tableView reloadData];
-        
     });
 }
 
