@@ -266,11 +266,6 @@
         return;
     }
     
-    // This allows the selection of the image taken to be better seen if the user is not already in that VC
-    if (self.autoSelectCameraImages && [self.navigationController.topViewController isKindOfClass:[GMAlbumsViewController class]]) {
-        [((GMAlbumsViewController *)self.navigationController.topViewController) selectAllAlbumsCell];
-    }
-    
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
     picker.mediaTypes = @[(NSString *)kUTTypeImage];
@@ -337,7 +332,13 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
-    [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:^
+     {
+         // This allows the selection of the image taken to be better seen if the user is not already in that VC
+         if (self.autoSelectCameraImages && [self.navigationController.topViewController isKindOfClass:[GMAlbumsViewController class]]) {
+             [((GMAlbumsViewController *)self.navigationController.topViewController) selectAllAlbumsCell];
+         }
+     }];
 
     NSString *mediaType = info[UIImagePickerControllerMediaType];
     if ([mediaType isEqualToString:(NSString *)kUTTypeImage]) {
