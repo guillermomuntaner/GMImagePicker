@@ -335,8 +335,14 @@
     [picker.presentingViewController dismissViewControllerAnimated:YES completion:^
      {
          // This allows the selection of the image taken to be better seen if the user is not already in that VC
-         if (self.autoSelectCameraImages && [self.navigationController.topViewController isKindOfClass:[GMAlbumsViewController class]]) {
-             [((GMAlbumsViewController *)self.navigationController.topViewController) selectAllAlbumsCell];
+         if (self.autoSelectCameraImages &&
+             ![self.navigationController.topViewController.title isEqualToString:NSLocalizedStringFromTableInBundle(@"picker.table.all-photos-label",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"All photos")])
+             {
+                 [self.navigationController popToRootViewControllerAnimated:YES];
+                 
+                 dispatch_async(dispatch_get_main_queue(), ^{ // Async call to give time for pop to finish
+                     [(GMAlbumsViewController*)self.navigationController.viewControllers.firstObject selectAllAlbumsCell];
+                 });
          }
      }];
 
