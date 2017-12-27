@@ -22,15 +22,13 @@
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-    
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])
     {
         self.opaque                             = NO;
         self.backgroundColor                    = [UIColor clearColor];
-        self.textLabel.backgroundColor          = self.backgroundColor;
-        self.detailTextLabel.backgroundColor    = self.backgroundColor;
-        // self.isAccessibilityElement             = YES;
-
+        self.titleLabel.backgroundColor         = self.backgroundColor;
+        self.infoLabel.backgroundColor          = self.backgroundColor;
+        
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
         // Border width of 1 pixel:
@@ -96,42 +94,46 @@
         [self.imageView1 addSubview:_videoIcon];
         _videoIcon.hidden = NO;
 
-        // TextLabel
-        self.textLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:17.0];
-        self.textLabel.numberOfLines = 1;
-        self.textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        self.textLabel.adjustsFontSizeToFitWidth = YES;
+        // Labels
+        self.titleLabel = [UILabel new];
+        self.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:17.0];
+        self.titleLabel.numberOfLines = 1;
+        self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        self.titleLabel.adjustsFontSizeToFitWidth = YES;
+        [self.contentView addSubview:self.titleLabel];
 
-        self.detailTextLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14.0];
-        self.detailTextLabel.numberOfLines = 1;
-        self.detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        self.detailTextLabel.adjustsFontSizeToFitWidth = YES;
+        self.infoLabel = [UILabel new];
+        self.infoLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14.0];
+        self.infoLabel.numberOfLines = 1;
+        self.infoLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        self.infoLabel.adjustsFontSizeToFitWidth = YES;
+        [self.contentView addSubview:self.infoLabel];
         
         // Set next text labels contraints :
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView1]-(offset)-[textLabel]-|"
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView1]-(offset)-[titleLabel]-|"
                                                                                  options:0
                                                                                  metrics:@{@"offset": @(kAlbumImageToTextSpace)}
-                                                                                   views:@{@"textLabel": self.textLabel,
+                                                                                   views:@{@"titleLabel": self.titleLabel,
                                                                                            @"imageView1": self.imageView1}]];
         
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView1]-(offset)-[detailTextLabel]-|"
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView1]-(offset)-[infoLabel]-|"
                                                                                  options:0
                                                                                  metrics:@{@"offset": @(kAlbumImageToTextSpace)}
-                                                                                   views:@{@"detailTextLabel": self.detailTextLabel,
+                                                                                   views:@{@"infoLabel": self.infoLabel,
                                                                                            @"imageView1": self.imageView1}]];
         
         
-        [self.contentView addConstraints:@[[NSLayoutConstraint constraintWithItem:self.textLabel
+        [self.contentView addConstraints:@[[NSLayoutConstraint constraintWithItem:self.titleLabel
                                                                         attribute:NSLayoutAttributeBottom
                                                                         relatedBy:NSLayoutRelationEqual
-                                                                           toItem:self.textLabel.superview
+                                                                           toItem:self.titleLabel.superview
                                                                         attribute:NSLayoutAttributeCenterY
                                                                        multiplier:1.f constant:0.f]]];
         
-        [self.contentView addConstraints:@[[NSLayoutConstraint constraintWithItem:self.detailTextLabel
+        [self.contentView addConstraints:@[[NSLayoutConstraint constraintWithItem:self.infoLabel
                                                                         attribute:NSLayoutAttributeTop
                                                                         relatedBy:NSLayoutRelationEqual
-                                                                           toItem:self.textLabel.superview
+                                                                           toItem:self.titleLabel.superview
                                                                         attribute:NSLayoutAttributeCenterY
                                                                        multiplier:1.f constant:+4.f]]];
     }
