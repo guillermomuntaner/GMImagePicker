@@ -36,13 +36,28 @@
         _minimumInteritemSpacing = 2.0;
         
         // Sample of how to select the collections you want to display:
-        _customSmartCollections = @[@(PHAssetCollectionSubtypeSmartAlbumFavorites),
-                                    @(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded),
-                                    @(PHAssetCollectionSubtypeSmartAlbumVideos),
-                                    @(PHAssetCollectionSubtypeSmartAlbumSlomoVideos),
-                                    @(PHAssetCollectionSubtypeSmartAlbumTimelapses),
-                                    @(PHAssetCollectionSubtypeSmartAlbumBursts),
-                                    @(PHAssetCollectionSubtypeSmartAlbumPanoramas)];
+        NSMutableArray* collections = [NSMutableArray arrayWithArray:@[@(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumGeneric),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumPanoramas),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumVideos),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumFavorites),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumTimelapses),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumBursts),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumSlomoVideos),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumUserLibrary)]];
+        if (@available(iOS 9.0, *)) {
+            [collections addObjectsFromArray:@[@(PHAssetCollectionSubtypeSmartAlbumSelfPortraits),
+                                               @(PHAssetCollectionSubtypeSmartAlbumScreenshots)]];
+        }
+        if (@available(iOS 10.3, *)) {
+            [collections addObjectsFromArray:@[@(PHAssetCollectionSubtypeSmartAlbumDepthEffect),
+                                               @(PHAssetCollectionSubtypeSmartAlbumLivePhotos)]];
+        }
+        if (@available(iOS 11.0, *)) {
+            [collections addObjectsFromArray:@[@(PHAssetCollectionSubtypeSmartAlbumAnimated),
+                                               @(PHAssetCollectionSubtypeSmartAlbumLongExposures)]];
+        }
+        _customSmartCollections = collections;
         // If you don't want to show smart collections, just put _customSmartCollections to nil;
         //_customSmartCollections=nil;
         
