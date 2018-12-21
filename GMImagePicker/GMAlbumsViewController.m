@@ -418,7 +418,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         
         // Auto select last taken pictures?
         if (self.picker.showCameraButton && self.picker.autoSelectCameraImages) {
-            PHFetchResult* allAlbumsFetchResults = _collectionsFetchResultsAssets[0][0];
+            PHFetchResult* allAlbumsFetchResults = self->_collectionsFetchResultsAssets[0][0];
             PHFetchResultChangeDetails *collectionChanges = [changeInstance changeDetailsForFetchResult:allAlbumsFetchResults];
             if (collectionChanges) {
                 
