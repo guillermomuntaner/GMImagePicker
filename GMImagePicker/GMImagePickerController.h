@@ -129,13 +129,11 @@ static CGSize const kPopoverContentSize = {480, 720};
 /**
  *  Grid customizations:
  *
- *  - colsInPortrait: Number of columns in portrait (3 by default)
- *  - colsInLandscape: Number of columns in landscape (5 by default)
+ *  - minimumThumbnailWidth: Minimum width (height is equal) used to display image thumbnails (70.0 by default)
  *  - minimumInteritemSpacing: Horizontal and vertical minimum space between grid cells (2.0 by default)
  */
-@property (nonatomic) NSInteger colsInPortrait;
-@property (nonatomic) NSInteger colsInLandscape;
-@property (nonatomic) double minimumInteritemSpacing;
+@property (nonatomic) CGFloat minimumThumbnailWidth;
+@property (nonatomic) CGFloat minimumInteritemSpacing;
 
 /**
  * UI customizations:

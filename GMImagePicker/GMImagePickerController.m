@@ -31,8 +31,7 @@
         _showCameraButton = NO;
         
         // Grid configuration:
-        _colsInPortrait = 3;
-        _colsInLandscape = 5;
+        _minimumThumbnailWidth = 70.0;
         _minimumInteritemSpacing = 2.0;
         
         // Sample of how to select the collections you want to display:
