@@ -282,6 +282,10 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     // Set the 3 images (if exists):
     if ([assetsFetchResult count] > 0) {
         CGFloat scale = [UIScreen mainScreen].scale;
+    
+        PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+        options.synchronous = NO;
+        options.networkAccessAllowed = YES;
         
         //Compute the thumbnail pixel size:
         CGSize tableCellThumbnailSize1 = CGSizeMake(kAlbumThumbnailSize1.width*scale, kAlbumThumbnailSize1.height*scale);
@@ -290,7 +294,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         [self.imageManager requestImageForAsset:asset
                                      targetSize:tableCellThumbnailSize1
                                     contentMode:PHImageContentModeAspectFill
-                                        options:nil
+                                        options:options
                                   resultHandler:^(UIImage *result, NSDictionary *info) {
              if (cell.tag == currentTag) {
                  cell.imageView1.image = result;
@@ -306,7 +310,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             [self.imageManager requestImageForAsset:asset
                                          targetSize:tableCellThumbnailSize2
                                         contentMode:PHImageContentModeAspectFill
-                                            options:nil
+                                            options:options
                                       resultHandler:^(UIImage *result, NSDictionary *info) {
                  if (cell.tag == currentTag) {
                      cell.imageView2.image = result;
@@ -322,7 +326,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             [self.imageManager requestImageForAsset:asset
                                          targetSize:tableCellThumbnailSize3
                                         contentMode:PHImageContentModeAspectFill
-                                            options:nil
+                                            options:options
                                       resultHandler:^(UIImage *result, NSDictionary *info) {
                  if (cell.tag == currentTag) {
                      cell.imageView3.image = result;
