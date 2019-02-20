@@ -392,11 +392,16 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
                     if ([insertedIndexes count]) {
                         [collectionView insertItemsAtIndexPaths:[insertedIndexes aapl_indexPathsFromIndexesWithSection:0]];
                     }
-                    NSIndexSet *changedIndexes = [collectionChanges changedIndexes];
-                    if ([changedIndexes count]) {
-                        [collectionView reloadItemsAtIndexPaths:[changedIndexes aapl_indexPathsFromIndexesWithSection:0]];
+                } completion:^(BOOL finished) {
+                    if (finished) {
+                        // Puting this after removes and inserts indexes fixes a crash of deleting and reloading at the same time.
+                        // From docs: When updating your app’s interface, apply changes after removals and insertions and before moves.
+                        NSIndexSet *changedIndexes = [collectionChanges changedIndexes];
+                        if ([changedIndexes count]) {
+                            [collectionView reloadItemsAtIndexPaths:[changedIndexes aapl_indexPathsFromIndexesWithSection:0]];
+                        }
                     }
-                } completion:NULL];
+                }];
             }
             
             [self resetCachedAssets];
