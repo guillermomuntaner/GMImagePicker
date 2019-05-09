@@ -163,7 +163,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             
             PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
             [userFetchResultArray addObject:assetsFetchResult];
-            [userFetchResultLabel addObject:collection.localizedTitle];
+            [userFetchResultLabel addObject:collection.localizedTitle ?: @""];
         }
     }
 
