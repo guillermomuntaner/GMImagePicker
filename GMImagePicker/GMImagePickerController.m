@@ -68,18 +68,31 @@
         self.preferredContentSize = kPopoverContentSize;
         
         // UI Customisation
-        _pickerBackgroundColor = [UIColor whiteColor];
-        _pickerTextColor = [UIColor darkTextColor];
+        if (@available(iOS 13.0, *)) {
+            _pickerBackgroundColor = UIColor.systemBackgroundColor;
+            _pickerTextColor = UIColor.secondaryLabelColor;
+        } else {
+            _pickerBackgroundColor = UIColor.whiteColor;
+            _pickerTextColor = UIColor.darkTextColor;
+        }
         _pickerFontName = @"HelveticaNeue";
         _pickerBoldFontName = @"HelveticaNeue-Bold";
         _pickerFontNormalSize = 14.0f;
         _pickerFontHeaderSize = 17.0f;
        
-        _navigationBarTextColor = [UIColor darkTextColor];
-        _navigationBarTintColor = [UIColor darkTextColor];
-        
-        _toolbarTextColor = [UIColor darkTextColor];
-        _toolbarTintColor = [UIColor darkTextColor];
+        if (@available(iOS 13.0, *)) {
+            _navigationBarTextColor = UIColor.secondaryLabelColor;
+            _navigationBarTintColor = UIColor.secondaryLabelColor;
+            
+            _toolbarTextColor = UIColor.secondaryLabelColor;
+            _toolbarTintColor = UIColor.secondaryLabelColor;
+        } else {
+            _navigationBarTextColor = UIColor.darkTextColor;
+            _navigationBarTintColor = UIColor.darkTextColor;
+            
+            _toolbarTextColor = UIColor.darkTextColor;
+            _toolbarTintColor = UIColor.darkTextColor;
+        }
         
         _pickerStatusBarStyle = UIStatusBarStyleDefault;
         
