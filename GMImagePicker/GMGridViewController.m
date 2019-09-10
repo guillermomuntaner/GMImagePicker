@@ -62,40 +62,13 @@ static CGSize AssetGridThumbnailSize;
 NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 
 @implementation GMGridViewController
-{
-    CGFloat screenWidth;
-    CGFloat screenHeight;
-    UICollectionViewFlowLayout *portraitLayout;
-    UICollectionViewFlowLayout *landscapeLayout;
-}
 
 -(id)initWithPicker:(GMImagePickerController *)picker
 {
     //Custom init. The picker contains custom information to create the FlowLayout
     self.picker = picker;
     
-    //Ipad popover is not affected by rotation!
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-    {
-        screenWidth = CGRectGetWidth(picker.view.bounds);
-        screenHeight = CGRectGetHeight(picker.view.bounds);
-    }
-    else
-    {
-        if(UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation))
-        {
-            screenHeight = CGRectGetWidth(picker.view.bounds);
-            screenWidth = CGRectGetHeight(picker.view.bounds);
-        }
-        else
-        {
-            screenWidth = CGRectGetWidth(picker.view.bounds);
-            screenHeight = CGRectGetHeight(picker.view.bounds);
-        }
-    }
-    
-    
-    UICollectionViewFlowLayout *layout = [self collectionViewFlowLayoutForOrientation:[UIApplication sharedApplication].statusBarOrientation];
+    UICollectionViewFlowLayout *layout = self.updatedCollectionViewFlowLayout;
     if (self = [super initWithCollectionViewLayout:layout])
     {
         //Compute the thumbnail pixel size:
@@ -128,11 +101,6 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     self.imageManager = [[PHCachingImageManager alloc] init];
     [self resetCachedAssets];
     [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
-    
-    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
-    {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -162,36 +130,35 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 
 #pragma mark - Rotation
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return;
-    }
-    
-    UICollectionViewFlowLayout *layout = [self collectionViewFlowLayoutForOrientation:toInterfaceOrientation];
-    
-    //Update the AssetGridThumbnailSize:
-    CGFloat scale = [UIScreen mainScreen].scale;
-    AssetGridThumbnailSize = CGSizeMake(layout.itemSize.width * scale, layout.itemSize.height * scale);
-    
-    [self resetCachedAssets];
-    //This is optional. Reload visible thumbnails:
-    for (GMGridViewCell *cell in [self.collectionView visibleCells]) {
-        NSInteger currentTag = cell.tag;
-        [self.imageManager requestImageForAsset:cell.asset
-                                     targetSize:AssetGridThumbnailSize
-                                    contentMode:PHImageContentModeAspectFill
-                                        options:nil
-                                  resultHandler:^(UIImage *result, NSDictionary *info)
-                                    {
-                                        // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
-                                        if (cell.tag == currentTag) {
-                                            [cell.imageView setImage:result];
-                                        }
-                                    }];
-    }
-    
-    [self.collectionView setCollectionViewLayout:layout animated:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        UICollectionViewFlowLayout *layout = self.updatedCollectionViewFlowLayout;
+        
+        //Update the AssetGridThumbnailSize:
+        CGFloat scale = [UIScreen mainScreen].scale;
+        AssetGridThumbnailSize = CGSizeMake(layout.itemSize.width * scale, layout.itemSize.height * scale);
+        
+        [self resetCachedAssets];
+        //This is optional. Reload visible thumbnails:
+        for (GMGridViewCell *cell in [self.collectionView visibleCells]) {
+            NSInteger currentTag = cell.tag;
+            [self.imageManager requestImageForAsset:cell.asset
+                                         targetSize:AssetGridThumbnailSize
+                                        contentMode:PHImageContentModeAspectFill
+                                            options:nil
+                                      resultHandler:^(UIImage *result, NSDictionary *info)
+             {
+                 // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
+                 if (cell.tag == currentTag) {
+                     [cell.imageView setImage:result];
+                 }
+             }];
+        }
+        
+        [self.collectionView setCollectionViewLayout:layout animated:YES];
+    });
 }
 
 
@@ -238,66 +205,21 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 
 #pragma mark - Collection View Layout
 
-- (UICollectionViewFlowLayout *)collectionViewFlowLayoutForOrientation:(UIInterfaceOrientation)orientation
+- (UICollectionViewFlowLayout *)updatedCollectionViewFlowLayout
 {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-    {
-        if(!portraitLayout)
-        {
-            portraitLayout = [[UICollectionViewFlowLayout alloc] init];
-            portraitLayout.minimumInteritemSpacing = self.picker.minimumInteritemSpacing;
-            int cellTotalUsableWidth = screenWidth - (self.picker.colsInPortrait-1)*self.picker.minimumInteritemSpacing;
-            portraitLayout.itemSize = CGSizeMake(cellTotalUsableWidth/self.picker.colsInPortrait, cellTotalUsableWidth/self.picker.colsInPortrait);
-            double cellTotalUsedWidth = (double)portraitLayout.itemSize.width*self.picker.colsInPortrait;
-            double spaceTotalWidth = (double)screenWidth-cellTotalUsedWidth;
-            double spaceWidth = spaceTotalWidth/(double)(self.picker.colsInPortrait-1);
-            portraitLayout.minimumLineSpacing = spaceWidth;
-        }
-        return portraitLayout;
-    }
-    else
-    {
-        if(UIInterfaceOrientationIsLandscape(orientation))
-        {
-            if(!landscapeLayout)
-            {
-                landscapeLayout = [[UICollectionViewFlowLayout alloc] init];
-                landscapeLayout.minimumInteritemSpacing = self.picker.minimumInteritemSpacing;
-                int cellTotalUsableWidth = screenHeight - (self.picker.colsInLandscape-1)*self.picker.minimumInteritemSpacing;
-                landscapeLayout.itemSize = CGSizeMake(cellTotalUsableWidth/self.picker.colsInLandscape, cellTotalUsableWidth/self.picker.colsInLandscape);
-                double cellTotalUsedWidth = (double)landscapeLayout.itemSize.width*self.picker.colsInLandscape;
-                double spaceTotalWidth = (double)screenHeight-cellTotalUsedWidth;
-                double spaceWidth = spaceTotalWidth/(double)(self.picker.colsInLandscape-1);
-                landscapeLayout.minimumLineSpacing = spaceWidth;
-            }
-            return landscapeLayout;
-        }
-        else
-        {
-            if(!portraitLayout)
-            {
-                portraitLayout = [[UICollectionViewFlowLayout alloc] init];
-                portraitLayout.minimumInteritemSpacing = self.picker.minimumInteritemSpacing;
-                int cellTotalUsableWidth = screenWidth - (self.picker.colsInPortrait-1)*self.picker.minimumInteritemSpacing;
-                portraitLayout.itemSize = CGSizeMake(cellTotalUsableWidth/self.picker.colsInPortrait, cellTotalUsableWidth/self.picker.colsInPortrait);
-                double cellTotalUsedWidth = (double)portraitLayout.itemSize.width*self.picker.colsInPortrait;
-                double spaceTotalWidth = (double)screenWidth-cellTotalUsedWidth;
-                double spaceWidth = spaceTotalWidth/(double)(self.picker.colsInPortrait-1);
-                portraitLayout.minimumLineSpacing = spaceWidth;
-            }
-            return portraitLayout;
-        }
-    }
+    CGFloat totalWidth = self.picker.view.bounds.size.width;
+    NSUInteger numberOfColumns = floor((totalWidth + self.picker.minimumInteritemSpacing) / (self.picker.minimumThumbnailWidth + self.picker.minimumInteritemSpacing));
+    CGFloat itemWidth = (totalWidth - (numberOfColumns - 1)*self.picker.minimumInteritemSpacing) / (CGFloat)numberOfColumns;
+    
+    UICollectionViewFlowLayout* layout = UICollectionViewFlowLayout.new;
+    layout.minimumInteritemSpacing = self.picker.minimumInteritemSpacing;
+    layout.minimumLineSpacing = self.picker.minimumInteritemSpacing;
+    layout.itemSize = CGSizeMake(itemWidth, itemWidth);
+    return layout;
 }
 
 
 #pragma mark - Collection View Data Source
-
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
-{
-    return 1;
-}
-
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -310,37 +232,18 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     
     PHAsset *asset = self.assetsFetchResults[indexPath.item];
     
-    /*if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-    {
-        NSLog(@"Image manager: Requesting FIT image for iPad");
-        [self.imageManager requestImageForAsset:asset
-                                     targetSize:AssetGridThumbnailSize
-                                    contentMode:PHImageContentModeAspectFit
-                                        options:nil
-                                  resultHandler:^(UIImage *result, NSDictionary *info) {
-                                      
-                                      // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
-                                      if (cell.tag == currentTag) {
-                                          [cell.imageView setImage:result];
-                                      }
-                                  }];
-    }
-    else*/
-    {
-        //NSLog(@"Image manager: Requesting FILL image for iPhone");
-        [self.imageManager requestImageForAsset:asset
-                                     targetSize:AssetGridThumbnailSize
-                                    contentMode:PHImageContentModeAspectFill
-                                        options:nil
-                                  resultHandler:^(UIImage *result, NSDictionary *info) {
-                                      
-                                      // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
-                                      if (cell.tag == currentTag) {
-                                          [cell.imageView setImage:result];
-                                      }
-                                  }];
-    }
-    
+    //NSLog(@"Image manager: Requesting FILL image for iPhone");
+    [self.imageManager requestImageForAsset:asset
+                                 targetSize:AssetGridThumbnailSize
+                                contentMode:PHImageContentModeAspectFill
+                                    options:nil
+                              resultHandler:^(UIImage *result, NSDictionary *info) {
+                                  
+                                  // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
+                                  if (cell.tag == currentTag) {
+                                      [cell.imageView setImage:result];
+                                  }
+                              }];
     
     [cell bind:asset];
     
@@ -356,7 +259,10 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     // Setting `selected` property blocks further deselection. Have to call selectItemAtIndexPath too. ( ref: http://stackoverflow.com/a/17812116/1648333 )
     if ([self.picker.selectedAssets containsObject:asset]) {
         cell.selected = YES;
-        [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+        // If we call it right away a different cell will get selected
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+        });
     } else {
         cell.selected = NO;
     }
@@ -485,17 +391,17 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
                     NSIndexSet *insertedIndexes = [collectionChanges insertedIndexes];
                     if ([insertedIndexes count]) {
                         [collectionView insertItemsAtIndexPaths:[insertedIndexes aapl_indexPathsFromIndexesWithSection:0]];
-                        if (self.picker.showCameraButton && self.picker.autoSelectCameraImages) {
-                            for (NSIndexPath *path in [insertedIndexes aapl_indexPathsFromIndexesWithSection:0]) {
-                                [self collectionView:collectionView didSelectItemAtIndexPath:path];
-                            }
+                    }
+                } completion:^(BOOL finished) {
+                    if (finished) {
+                        // Puting this after removes and inserts indexes fixes a crash of deleting and reloading at the same time.
+                        // From docs: When updating your app’s interface, apply changes after removals and insertions and before moves.
+                        NSIndexSet *changedIndexes = [collectionChanges changedIndexes];
+                        if ([changedIndexes count]) {
+                            [collectionView reloadItemsAtIndexPaths:[changedIndexes aapl_indexPathsFromIndexesWithSection:0]];
                         }
                     }
-                    NSIndexSet *changedIndexes = [collectionChanges changedIndexes];
-                    if ([changedIndexes count]) {
-                        [collectionView reloadItemsAtIndexPaths:[changedIndexes aapl_indexPathsFromIndexesWithSection:0]];
-                    }
-                } completion:NULL];
+                }];
             }
             
             [self resetCachedAssets];
@@ -548,14 +454,18 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
         NSArray *assetsToStartCaching = [self assetsAtIndexPaths:addedIndexPaths];
         NSArray *assetsToStopCaching = [self assetsAtIndexPaths:removedIndexPaths];
         
+        PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+        options.synchronous = NO;
+        options.networkAccessAllowed = YES;
+        
         [self.imageManager startCachingImagesForAssets:assetsToStartCaching
                                             targetSize:AssetGridThumbnailSize
                                            contentMode:PHImageContentModeAspectFill
-                                               options:nil];
+                                               options:options];
         [self.imageManager stopCachingImagesForAssets:assetsToStopCaching
                                            targetSize:AssetGridThumbnailSize
                                           contentMode:PHImageContentModeAspectFill
-                                              options:nil];
+                                              options:options];
         
         self.previousPreheatRect = preheatRect;
     }

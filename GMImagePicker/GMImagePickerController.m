@@ -11,7 +11,7 @@
 #import "GMAlbumsViewController.h"
 @import Photos;
 
-@interface GMImagePickerController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
+@interface GMImagePickerController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @end
 
@@ -31,18 +31,32 @@
         _showCameraButton = NO;
         
         // Grid configuration:
-        _colsInPortrait = 3;
-        _colsInLandscape = 5;
+        _minimumThumbnailWidth = 70.0;
         _minimumInteritemSpacing = 2.0;
         
         // Sample of how to select the collections you want to display:
-        _customSmartCollections = @[@(PHAssetCollectionSubtypeSmartAlbumFavorites),
-                                    @(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded),
-                                    @(PHAssetCollectionSubtypeSmartAlbumVideos),
-                                    @(PHAssetCollectionSubtypeSmartAlbumSlomoVideos),
-                                    @(PHAssetCollectionSubtypeSmartAlbumTimelapses),
-                                    @(PHAssetCollectionSubtypeSmartAlbumBursts),
-                                    @(PHAssetCollectionSubtypeSmartAlbumPanoramas)];
+        NSMutableArray* collections = [NSMutableArray arrayWithArray:@[@(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumGeneric),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumPanoramas),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumVideos),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumFavorites),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumTimelapses),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumBursts),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumSlomoVideos),
+                                                                       @(PHAssetCollectionSubtypeSmartAlbumUserLibrary)]];
+        if (@available(iOS 9.0, *)) {
+            [collections addObjectsFromArray:@[@(PHAssetCollectionSubtypeSmartAlbumSelfPortraits),
+                                               @(PHAssetCollectionSubtypeSmartAlbumScreenshots)]];
+        }
+        if (@available(iOS 10.3, *)) {
+            [collections addObjectsFromArray:@[@(PHAssetCollectionSubtypeSmartAlbumDepthEffect),
+                                               @(PHAssetCollectionSubtypeSmartAlbumLivePhotos)]];
+        }
+        if (@available(iOS 11.0, *)) {
+            [collections addObjectsFromArray:@[@(PHAssetCollectionSubtypeSmartAlbumAnimated),
+                                               @(PHAssetCollectionSubtypeSmartAlbumLongExposures)]];
+        }
+        _customSmartCollections = collections;
         // If you don't want to show smart collections, just put _customSmartCollections to nil;
         //_customSmartCollections=nil;
         
@@ -54,20 +68,31 @@
         self.preferredContentSize = kPopoverContentSize;
         
         // UI Customisation
-        _pickerBackgroundColor = [UIColor whiteColor];
-        _pickerTextColor = [UIColor darkTextColor];
+        if (@available(iOS 13.0, *)) {
+            _pickerBackgroundColor = UIColor.systemBackgroundColor;
+            _pickerTextColor = UIColor.secondaryLabelColor;
+        } else {
+            _pickerBackgroundColor = UIColor.whiteColor;
+            _pickerTextColor = UIColor.darkTextColor;
+        }
         _pickerFontName = @"HelveticaNeue";
         _pickerBoldFontName = @"HelveticaNeue-Bold";
         _pickerFontNormalSize = 14.0f;
         _pickerFontHeaderSize = 17.0f;
-        
-        _navigationBarBackgroundColor = [UIColor whiteColor];
-        _navigationBarTextColor = [UIColor darkTextColor];
-        _navigationBarTintColor = [UIColor darkTextColor];
-        
-        _toolbarBarTintColor = [UIColor whiteColor];
-        _toolbarTextColor = [UIColor darkTextColor];
-        _toolbarTintColor = [UIColor darkTextColor];
+       
+        if (@available(iOS 13.0, *)) {
+            _navigationBarTextColor = UIColor.secondaryLabelColor;
+            _navigationBarTintColor = UIColor.secondaryLabelColor;
+            
+            _toolbarTextColor = UIColor.secondaryLabelColor;
+            _toolbarTintColor = UIColor.secondaryLabelColor;
+        } else {
+            _navigationBarTextColor = UIColor.darkTextColor;
+            _navigationBarTintColor = UIColor.darkTextColor;
+            
+            _toolbarTextColor = UIColor.darkTextColor;
+            _toolbarTintColor = UIColor.darkTextColor;
+        }
         
         _pickerStatusBarStyle = UIStatusBarStyleDefault;
         
@@ -84,12 +109,14 @@
     self.view.backgroundColor = _pickerBackgroundColor;
 
     _navigationController.toolbar.translucent = YES;
+    _navigationController.toolbar.backgroundColor = _toolbarBackgroundColor;
     _navigationController.toolbar.barTintColor = _toolbarBarTintColor;
     _navigationController.toolbar.tintColor = _toolbarTintColor;
-    [(UIView*)[_navigationController.toolbar.subviews objectAtIndex:0] setAlpha:0.75f];  // URGH - I know!
     
     _navigationController.navigationBar.backgroundColor = _navigationBarBackgroundColor;
+    _navigationController.navigationBar.barTintColor = _navigationBarBarTintColor;
     _navigationController.navigationBar.tintColor = _navigationBarTintColor;
+   
     NSDictionary *attributes;
     if (_useCustomFontForNavigationBar) {
         attributes = @{NSForegroundColorAttributeName : _navigationBarTextColor,
@@ -116,25 +143,12 @@
     _navigationController.delegate = self;
     
     _navigationController.navigationBar.translucent = YES;
-    [_navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-    _navigationController.navigationBar.shadowImage = [UIImage new];
     
     [_navigationController willMoveToParentViewController:self];
     [_navigationController.view setFrame:self.view.frame];
     [self.view addSubview:_navigationController.view];
     [self addChildViewController:_navigationController];
     [_navigationController didMoveToParentViewController:self];
-}
-
-
-#pragma mark - UIAlertViewDelegate
-
--(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 1) {
-        // Only if OK was pressed do we want to completge the selection
-        [self finishPickingAssets:self];
-    }
 }
 
 
@@ -148,12 +162,16 @@
     if (!self.allowsMultipleSelection) {
         if (self.confirmSingleSelection) {
             NSString *message = self.confirmSingleSelectionPrompt ? self.confirmSingleSelectionPrompt : [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.confirm.message",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Do you want to select the image you tapped on?")];
+            NSString *title = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.confirm.title",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Are You Sure?")];
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+            NSString *yesTitle = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.action.yes",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Yes")];
+            [alertController addAction:[UIAlertAction actionWithTitle:yesTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [self finishPickingAssets:self];
+            }]];
+            NSString *noTitle = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.action.no",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"No")];
+            [alertController addAction:[UIAlertAction actionWithTitle:noTitle style:UIAlertActionStyleCancel handler:nil]];
             
-            [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.confirm.title",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Are You Sure?")]
-                                        message:message
-                                       delegate:self
-                              cancelButtonTitle:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.action.no",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"No")]
-                              otherButtonTitles:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.action.yes",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Yes")], nil] show];
+            [self presentViewController:alertController animated:YES completion:nil];
         } else {
             [self finishPickingAssets:self];
         }
@@ -268,19 +286,11 @@
 - (void)cameraButtonPressed:(UIBarButtonItem *)button
 {
     if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Camera!"
-                                                        message:@"Sorry, this device does not have a camera."
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"No Camera!" message:@"Sorry, this device does not have a camera." preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
+        [self presentViewController:alertController animated:YES completion:nil];
 
         return;
-    }
-    
-    // This allows the selection of the image taken to be better seen if the user is not already in that VC
-    if (self.autoSelectCameraImages && [self.navigationController.topViewController isKindOfClass:[GMAlbumsViewController class]]) {
-        [((GMAlbumsViewController *)self.navigationController.topViewController) selectAllAlbumsCell];
     }
     
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
@@ -349,7 +359,19 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
-    [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:^
+     {
+         // This allows the selection of the image taken to be better seen if the user is not already in that VC
+         if (self.autoSelectCameraImages &&
+             ![self.navigationController.topViewController.title isEqualToString:NSLocalizedStringFromTableInBundle(@"picker.table.all-photos-label",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"All photos")])
+             {
+                 [self.navigationController popToRootViewControllerAnimated:YES];
+                 
+                 dispatch_async(dispatch_get_main_queue(), ^{ // Async call to give time for pop to finish
+                     [(GMAlbumsViewController*)self.navigationController.viewControllers.firstObject selectAllAlbumsCell];
+                 });
+         }
+     }];
 
     NSString *mediaType = info[UIImagePickerControllerMediaType];
     if ([mediaType isEqualToString:(NSString *)kUTTypeImage]) {
@@ -369,12 +391,9 @@
 -(void)image:(UIImage *)image finishedSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
     if (error) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Image Not Saved"
-                                                        message:@"Sorry, unable to save the new image!"
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Image Not Saved" message:@"Sorry, unable to save the new image!" preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
+        [self presentViewController:alertController animated:YES completion:nil];
     }
     
     // Note: The image view will auto refresh as the photo's are being observed in the other VCs

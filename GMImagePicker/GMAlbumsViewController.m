@@ -96,19 +96,15 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     
     // Fetch PHAssetCollections:
     PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
+    PHFetchResult *syncAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumSyncedAlbum options:nil];
     PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
-    self.collectionsFetchResults = @[topLevelUserCollections, smartAlbums];
-    self.collectionsLocalizedTitles = @[NSLocalizedStringFromTableInBundle(@"picker.table.user-albums-header",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Albums"), NSLocalizedStringFromTableInBundle(@"picker.table.smart-albums-header",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Smart Albums")];
+    self.collectionsFetchResults = @[topLevelUserCollections, syncAlbums, smartAlbums];
+    self.collectionsLocalizedTitles = @[NSLocalizedStringFromTableInBundle(@"picker.table.user-albums-header",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Albums"), NSLocalizedStringFromTableInBundle(@"picker.table.synced-albums-header",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Synced Albums"), NSLocalizedStringFromTableInBundle(@"picker.table.smart-albums-header",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"Smart Albums")];
     
     [self updateFetchResults];
     
     // Register for changes
     [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
-    
-    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
-    {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
 }
 
 - (void)dealloc
@@ -136,11 +132,13 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     
     //Fetch PHAssetCollections:
     PHFetchResult *topLevelUserCollections = [self.collectionsFetchResults objectAtIndex:0];
-    PHFetchResult *smartAlbums = [self.collectionsFetchResults objectAtIndex:1];
+    PHFetchResult *syncedAlbums = [self.collectionsFetchResults objectAtIndex:1];
+    PHFetchResult *smartAlbums = [self.collectionsFetchResults objectAtIndex:2];
     
     //All album: Sorted by descending creation date.
     NSMutableArray *allFetchResultArray = [[NSMutableArray alloc] init];
     NSMutableArray *allFetchResultLabel = [[NSMutableArray alloc] init];
+    if (self.picker.mediaTypes)
     {
         PHFetchOptions *options = [[PHFetchOptions alloc] init];
         options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
@@ -165,11 +163,29 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             
             PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
             [userFetchResultArray addObject:assetsFetchResult];
-            [userFetchResultLabel addObject:collection.localizedTitle];
+            [userFetchResultLabel addObject:collection.localizedTitle ?: @""];
+        }
+    }
+
+    //Synced albums:
+    NSMutableArray *syncedFetchResultArray = [[NSMutableArray alloc] init];
+    NSMutableArray *syncedFetchResultLabel = [[NSMutableArray alloc] init];
+    for(PHCollection *collection in syncedAlbums)
+    {
+        if ([collection isKindOfClass:[PHAssetCollection class]])
+        {
+            PHFetchOptions *options = [[PHFetchOptions alloc] init];
+            options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
+            PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
+            
+            //Albums collections are allways PHAssetCollectionType=1 & PHAssetCollectionSubtype=2
+            
+            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
+            [syncedFetchResultArray addObject:assetsFetchResult];
+            [syncedFetchResultLabel addObject:collection.localizedTitle];
         }
     }
     
-                                  
     //Smart albums: Sorted by descending creation date.
     NSMutableArray *smartFetchResultArray = [[NSMutableArray alloc] init];
     NSMutableArray *smartFetchResultLabel = [[NSMutableArray alloc] init];
@@ -196,8 +212,8 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         }
     }
     
-    self.collectionsFetchResultsAssets= @[allFetchResultArray,userFetchResultArray,smartFetchResultArray];
-    self.collectionsFetchResultsTitles= @[allFetchResultLabel,userFetchResultLabel,smartFetchResultLabel];
+    self.collectionsFetchResultsAssets= @[allFetchResultArray,userFetchResultArray,syncedFetchResultArray,smartFetchResultArray];
+    self.collectionsFetchResultsTitles= @[allFetchResultLabel,userFetchResultLabel,syncedFetchResultLabel,smartFetchResultLabel];
 }
 
 
@@ -250,23 +266,27 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     cell.tag = currentTag;
 
     // Set the label
-    cell.textLabel.font = [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontHeaderSize];
-    cell.textLabel.text = (self.collectionsFetchResultsTitles[indexPath.section])[indexPath.row];
-    cell.textLabel.textColor = self.picker.pickerTextColor;
+    cell.titleLabel.font = [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontHeaderSize];
+    cell.titleLabel.text = (self.collectionsFetchResultsTitles[indexPath.section])[indexPath.row];
+    cell.titleLabel.textColor = self.picker.pickerTextColor;
     
     // Retrieve the pre-fetched assets for this album:
     PHFetchResult *assetsFetchResult = (self.collectionsFetchResultsAssets[indexPath.section])[indexPath.row];
     
     // Display the number of assets
     if (self.picker.displayAlbumsNumberOfAssets) {
-        cell.detailTextLabel.font = [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontNormalSize];
-        cell.detailTextLabel.text = [self tableCellSubtitle:assetsFetchResult];
-        cell.detailTextLabel.textColor = self.picker.pickerTextColor;
+        cell.infoLabel.font = [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontNormalSize];
+        cell.infoLabel.text = [self tableCellSubtitle:assetsFetchResult];
+        cell.infoLabel.textColor = self.picker.pickerTextColor;
     }
     
     // Set the 3 images (if exists):
     if ([assetsFetchResult count] > 0) {
         CGFloat scale = [UIScreen mainScreen].scale;
+    
+        PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+        options.synchronous = NO;
+        options.networkAccessAllowed = YES;
         
         //Compute the thumbnail pixel size:
         CGSize tableCellThumbnailSize1 = CGSizeMake(kAlbumThumbnailSize1.width*scale, kAlbumThumbnailSize1.height*scale);
@@ -275,7 +295,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         [self.imageManager requestImageForAsset:asset
                                      targetSize:tableCellThumbnailSize1
                                     contentMode:PHImageContentModeAspectFill
-                                        options:nil
+                                        options:options
                                   resultHandler:^(UIImage *result, NSDictionary *info) {
              if (cell.tag == currentTag) {
                  cell.imageView1.image = result;
@@ -291,7 +311,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             [self.imageManager requestImageForAsset:asset
                                          targetSize:tableCellThumbnailSize2
                                         contentMode:PHImageContentModeAspectFill
-                                            options:nil
+                                            options:options
                                       resultHandler:^(UIImage *result, NSDictionary *info) {
                  if (cell.tag == currentTag) {
                      cell.imageView2.image = result;
@@ -307,7 +327,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             [self.imageManager requestImageForAsset:asset
                                          targetSize:tableCellThumbnailSize3
                                         contentMode:PHImageContentModeAspectFill
-                                            options:nil
+                                            options:options
                                       resultHandler:^(UIImage *result, NSDictionary *info) {
                  if (cell.tag == currentTag) {
                      cell.imageView3.image = result;
@@ -330,12 +350,12 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    GMAlbumsViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     
     // Init the GMGridViewController
     GMGridViewController *gridViewController = [[GMGridViewController alloc] initWithPicker:[self picker]];
     // Set the title
-    gridViewController.title = cell.textLabel.text;
+    gridViewController.title = cell.titleLabel.text;
     // Use the prefetched assets!
     gridViewController.assetsFetchResults = [[_collectionsFetchResultsAssets objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     
@@ -350,7 +370,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
 {
     UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
     header.contentView.backgroundColor = [UIColor clearColor];
-    header.backgroundView.backgroundColor = [UIColor clearColor];
+    header.backgroundView.backgroundColor = self.picker.pickerBackgroundColor;
 
     // Default is a bold font, but keep this styled as a normal font
     header.textLabel.font = [UIFont fontWithName:self.picker.pickerFontName size:self.picker.pickerFontNormalSize];
@@ -397,11 +417,26 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             self.collectionsFetchResults = updatedCollectionsFetchResults;
         }
         
+        // Auto select last taken pictures?
+        if (self.picker.showCameraButton && self.picker.autoSelectCameraImages) {
+            PHFetchResult* allAlbumsFetchResults = self->_collectionsFetchResultsAssets[0][0];
+            PHFetchResultChangeDetails *collectionChanges = [changeInstance changeDetailsForFetchResult:allAlbumsFetchResults];
+            if (collectionChanges) {
+                
+                // get the new fetch result
+                allAlbumsFetchResults = [collectionChanges fetchResultAfterChanges];
+                NSIndexSet *insertedIndexes = [collectionChanges insertedIndexes];
+                [insertedIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+                    PHAsset *asset = allAlbumsFetchResults[idx];
+                    [self.picker selectAsset:asset];
+                }];
+            }
+        }
+        
         // However, we want to update if photos are added, so the counts of items & thumbnails are updated too.
         // Maybe some checks could be done here , but for now is OKey.
         [self updateFetchResults];
         [self.tableView reloadData];
-        
     });
 }
 

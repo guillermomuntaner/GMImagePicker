@@ -54,14 +54,6 @@ static UIColor *disabledColor;
         _imageView = [UIImageView new];
         _imageView.frame = CGRectMake(0, 0, cellSize, cellSize);
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
-        /*if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        {
-            _imageView.contentMode = UIViewContentModeScaleAspectFit;
-        }
-        else
-        {
-            _imageView.contentMode = UIViewContentModeScaleAspectFill;
-        }*/
         _imageView.clipsToBounds = YES;
         _imageView.translatesAutoresizingMaskIntoConstraints = NO;
         _imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
