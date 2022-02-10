@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		130E154627B5C0E200D13AB5 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 130E154527B5C0E200D13AB5 /* CoreServices.framework */; };
 		B31E08651A0C45BC000D7841 /* GMImagePicker.strings in Resources */ = {isa = PBXBuildFile; fileRef = B31E084C1A0C45BC000D7841 /* GMImagePicker.strings */; };
 		B31E08661A0C45BC000D7841 /* GMImagePicker.strings in Resources */ = {isa = PBXBuildFile; fileRef = B31E084F1A0C45BC000D7841 /* GMImagePicker.strings */; };
 		B31E08671A0C45BC000D7841 /* GMImagePicker.strings in Resources */ = {isa = PBXBuildFile; fileRef = B31E08521A0C45BC000D7841 /* GMImagePicker.strings */; };
@@ -33,7 +34,6 @@
 		B3A2F8B019D18A3700A59BE4 /* GMGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A2F8A919D18A3700A59BE4 /* GMGridViewCell.m */; };
 		B3A2F8B119D18A3700A59BE4 /* GMGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A2F8AB19D18A3700A59BE4 /* GMGridViewController.m */; };
 		B3A2F8B219D18A3700A59BE4 /* GMImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A2F8AD19D18A3700A59BE4 /* GMImagePickerController.m */; };
-		D93E0B2E1BE378F6001DA8EC /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D93E0B2D1BE378F6001DA8EC /* MobileCoreServices.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +47,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		130E154527B5C0E200D13AB5 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		B31E084D1A0C45BC000D7841 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = GMImagePicker.strings; sourceTree = "<group>"; };
 		B31E08501A0C45BC000D7841 /* ca */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ca; path = GMImagePicker.strings; sourceTree = "<group>"; };
 		B31E08531A0C45BC000D7841 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = GMImagePicker.strings; sourceTree = "<group>"; };
@@ -84,7 +85,6 @@
 		B3A2F8AB19D18A3700A59BE4 /* GMGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMGridViewController.m; sourceTree = "<group>"; };
 		B3A2F8AC19D18A3700A59BE4 /* GMImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMImagePickerController.h; sourceTree = "<group>"; };
 		B3A2F8AD19D18A3700A59BE4 /* GMImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMImagePickerController.m; sourceTree = "<group>"; };
-		D93E0B2D1BE378F6001DA8EC /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,7 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D93E0B2E1BE378F6001DA8EC /* MobileCoreServices.framework in Frameworks */,
+				130E154627B5C0E200D13AB5 /* CoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,6 +106,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		130E154427B5C0E200D13AB5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				130E154527B5C0E200D13AB5 /* CoreServices.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B31E084B1A0C45BC000D7841 /* Base.lproj */ = {
 			isa = PBXGroup;
 			children = (
@@ -173,10 +181,10 @@
 		B37D576B19CA3B39007F64BD = {
 			isa = PBXGroup;
 			children = (
-				D93E0B2D1BE378F6001DA8EC /* MobileCoreServices.framework */,
 				B37D577619CA3B3A007F64BD /* GMPhotoPicker */,
 				B37D579019CA3B3A007F64BD /* GMPhotoPickerTests */,
 				B37D577519CA3B3A007F64BD /* Products */,
+				130E154427B5C0E200D13AB5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -325,6 +333,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 				ca,

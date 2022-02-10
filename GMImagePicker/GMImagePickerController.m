@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Guillermo Muntaner Perelló. All rights reserved.
 //
 
-#import <MobileCoreServices/MobileCoreServices.h>
+#import <CoreServices/CoreServices.h>
 #import "GMImagePickerController.h"
 #import "GMAlbumsViewController.h"
 @import Photos;
