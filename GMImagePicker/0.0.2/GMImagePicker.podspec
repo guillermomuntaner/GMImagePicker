@@ -48,7 +48,7 @@ Pod::Spec.new do |s|
 
 
   # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.framework  = "MobileCoreServices"
+  s.framework  = "CoreServices"
   # s.frameworks = "SomeFramework", "AnotherFramework"
   # s.library   = "iconv"
   # s.libraries = "iconv", "xml2"
